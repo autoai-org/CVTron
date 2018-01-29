@@ -5,6 +5,7 @@ import tensorflow as tf
 import tensorlayer as tl
 import numpy as np
 from cvtron.utils.config_loader import MODEL_ZOO_PATH
+
 class ImageClassifier(object):
     def __init__(self, model_name='vgg_19',model_path=MODEL_ZOO_PATH):
         self.model_name = model_name
