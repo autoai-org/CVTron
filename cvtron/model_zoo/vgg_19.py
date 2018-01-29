@@ -1,7 +1,7 @@
-import inspect
-import os 
-import time 
-import numpy as np 
+#coding:utf-8
+import os
+import time
+import numpy as np
 import skimage
 import skimage.io
 import skimage.transform
@@ -10,12 +10,7 @@ import tensorflow as tf
 import tensorlayer as tl 
 from tensorlayer.layers import * 
 
-from constant import VGG_MEAN
-
-try:
-    from data.imagenet_classes import *
-except Exception as e:
-    raise Exception("{} / download the file from: https://github.com/zsdonghao/tensorlayer/tree/master/example/data".format(e))
+from cvtron.model_zoo.constant import VGG_MEAN
 
 
 def _load_image(path):
@@ -30,15 +25,6 @@ def _load_image(path):
     # resize to 224, 224
     resized_img = skimage.transform.resize(crop_img, (224, 224))
     return resized_img
-
-def print_prob(prob, limit):
-    synset = class_names
-    # print prob
-    pred = np.argsort(prob)[::-1]
-    # Get top1 label
-    topn = [(synset[pred[i]], prob[pred[i]]) for i in range(limit)]
-    print("Top: ", topn)
-    return topn
 
 def VGG19(rgb):
     """
