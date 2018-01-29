@@ -13,15 +13,11 @@ def download(url,path):
         os.makedirs(path)
     filename = url.split('/')[-1]
     dest = os.path.join(path,filename)
-    print(dest)
-    print(os.path.exists(dest))
     if os.path.exists(dest):
-        print('model exists')
         first_byte = os.path.getsize(dest)
     else:
         first_byte = 0
     if first_byte >= file_size:
-        print('model size larger than network')
         return file_size
     header = {"Range": "bytes=%s-%s" % (first_byte, file_size)}
     pbar = tqdm(
