@@ -1,11 +1,8 @@
+#coding:utf-8
 import numpy as np
 import tensorflow as tf
 import tensorlayer as tl
 from tensorlayer.layers import *
-
-from config import *
-
-
 
 def lrelu(x):
     return tf.maximum(x*0.2,x)
