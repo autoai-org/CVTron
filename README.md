@@ -1,5 +1,7 @@
 # CV Tron
 
+![logo.png](http://ac-5focnst0.clouddn.com/1a6303279b0a69375abc.png)
+
 [![Build Status](https://travis-ci.org/cv-group/CVTron.svg?branch=master)](https://travis-ci.org/cv-group/CVTron)
 [![Maintainability](https://api.codeclimate.com/v1/badges/721858de11e15ef33f2a/maintainability)](https://codeclimate.com/github/cv-group/CVTron/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/721858de11e15ef33f2a/test_coverage)](https://codeclimate.com/github/cv-group/CVTron/test_coverage)
