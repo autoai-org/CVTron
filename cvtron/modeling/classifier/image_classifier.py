@@ -5,14 +5,7 @@ import tensorflow as tf
 import tensorlayer as tl
 import numpy as np
 from cvtron.utils.config_loader import MODEL_ZOO_PATH
-
-def singleton(class_):
-    instances = {}
-    def getinstance(*args, **kwargs):
-        if class_ not in instances:
-            instances[class_] = class_(*args, **kwargs)
-        return instances[class_]
-    return getinstance
+from cvtron.modeling.base.singleton import singleton
 
 @singleton
 class ImageClassifier(object):
