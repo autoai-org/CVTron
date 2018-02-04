@@ -5,6 +5,7 @@
 [![Build Status](https://travis-ci.org/cv-group/CVTron.svg?branch=master)](https://travis-ci.org/cv-group/CVTron)
 [![Maintainability](https://api.codeclimate.com/v1/badges/721858de11e15ef33f2a/maintainability)](https://codeclimate.com/github/cv-group/CVTron/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/721858de11e15ef33f2a/test_coverage)](https://codeclimate.com/github/cv-group/CVTron/test_coverage)
+[![Documentation Status](https://readthedocs.org/projects/cvtron/badge/?version=latest)](http://cvtron.readthedocs.io/en/latest/?badge=latest)
 [![Discord](https://img.shields.io/badge/chat-on%20discord-7289da.svg)](https://discord.gg/fHYJXKX)
 
 CV Tron is a Computer Vision Library for industry use. It tries to provide an out-of-the-box experience for our customers and help them build on top of commonly used algorithms and models.
