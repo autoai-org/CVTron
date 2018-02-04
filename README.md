@@ -1,8 +1,11 @@
 # CV Tron
 
+![logo.png](http://ac-5focnst0.clouddn.com/1a6303279b0a69375abc.png)
+
 [![Build Status](https://travis-ci.org/cv-group/CVTron.svg?branch=master)](https://travis-ci.org/cv-group/CVTron)
 [![Maintainability](https://api.codeclimate.com/v1/badges/721858de11e15ef33f2a/maintainability)](https://codeclimate.com/github/cv-group/CVTron/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/721858de11e15ef33f2a/test_coverage)](https://codeclimate.com/github/cv-group/CVTron/test_coverage)
+[![Discord](https://img.shields.io/badge/chat-on%20discord-7289da.svg)](https://discord.gg/fHYJXKX)
 
 CV Tron is a Computer Vision Library for industry use. It tries to provide an out-of-the-box experience for our customers and help them build on top of commonly used algorithms and models.
 
@@ -15,6 +18,10 @@ CV Tron is built on top of [TensorFlow](https://github.com/tensorflow/tensorflow
 # Commercial Support
 
 If you or your affiliation are going to use cv tron in industry and for commercial purpose, except deploy the cv tron locally, you are encouraged to use it's commercial support and cloud services provided.
+
+# Community Support
+
+Get Community Support on [Discord](https://discord.gg/fHYJXKX)
 
 # Contribution 
 
