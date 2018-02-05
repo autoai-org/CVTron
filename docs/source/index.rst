@@ -13,7 +13,7 @@ More details can be found `here <https://github.com/cv-group/cvtron>`_.
 User Guide
 ------------
 
-The TensorLayer user guide explains how to install CVTron,
+The CVTron user guide explains how to install CVTron,
 how to call the CVTron API for further applications, and how to contribute
 to the library as a developer.
 
