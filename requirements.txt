@@ -4,7 +4,7 @@ chardet==3.0.4
 cycler==0.10.0
 decorator==4.2.1
 enum34==1.1.6
-html5lib==0.9999999
+html5lib==1.0.1
 idna==2.6
 Markdown==2.6.11
 networkx==2.1
