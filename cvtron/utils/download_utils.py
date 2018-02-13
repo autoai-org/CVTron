@@ -1,5 +1,5 @@
 #coding:utf-8
-from tqdm import tqdm 
+from tqdm import tqdm
 import requests
 import os 
 from urllib.request import urlopen

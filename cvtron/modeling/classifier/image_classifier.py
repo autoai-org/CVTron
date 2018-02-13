@@ -1,6 +1,5 @@
 #coding:utf-8
 import sys
-import os
 import tensorflow as tf
 import tensorlayer as tl
 import numpy as np

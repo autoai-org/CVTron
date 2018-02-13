@@ -1,5 +1,4 @@
 #coding:utf-8
-import os
 import time
 import numpy as np
 import skimage
@@ -7,7 +6,7 @@ import skimage.io
 import skimage.transform
 
 import tensorflow as tf 
-import tensorlayer as tl 
+import tensorlayer as tl
 from tensorlayer.layers import * 
 
 from cvtron.model_zoo.constant import VGG_MEAN
@@ -16,7 +15,8 @@ from cvtron.model_zoo.constant import VGG_MEAN
 def _load_image(path):
     img = skimage.io.imread(path)
     img = img/255.0 
-    assert (0<=img).all() and (img<=1.0).all()
+    if not (0<=img).all() and (img<=1.0).all():
+        raise ValueError('(0<=img).all() and (img<=1.0).all() expected but not satisified')
     # center crop
     short_edge = min(img.shape[:2])
     yy = int((img.shape[0] - short_edge) / 2)
@@ -42,9 +42,12 @@ def VGG19(rgb):
     else: # TF 1.0
         print(rgb_scaled)
         red, green, blue = tf.split(rgb_scaled, 3, 3)
-    assert red.get_shape().as_list()[1:] == [224, 224, 1]
-    assert green.get_shape().as_list()[1:] == [224, 224, 1]
-    assert blue.get_shape().as_list()[1:] == [224, 224, 1]
+    if not red.get_shape().as_list()[1:] == [224, 224, 1]:
+        raise ValueError('red.get_shape().as_list()[1:] == [224, 224, 1] expected but not satisfied')
+    if not green.get_shape().as_list()[1:] == [224, 224, 1]:
+        raise ValueError('green.get_shape().as_list()[1:] == [224, 224, 1] expected but not satified')
+    if not blue.get_shape().as_list()[1:] == [224, 224, 1]:
+        raise ValueError('blue.get_shape().as_list()[1:] == [224, 224, 1] expected but not satisfied')
     if tf.__version__ <= '0.11':
         bgr = tf.concat(3, [
             blue - VGG_MEAN[0],
@@ -59,9 +62,7 @@ def VGG19(rgb):
         ], axis=3)
     assert bgr.get_shape().as_list()[1:] == [224, 224, 3]
 
-    """ input layer """
     net_in = InputLayer(bgr, name='input')
-    """ conv1 """
     network = Conv2dLayer(net_in, act = tf.nn.relu,
                 shape = [3, 3, 3, 64], strides = [1, 1, 1, 1],
                 padding='SAME', name ='conv1_1')
@@ -71,7 +72,6 @@ def VGG19(rgb):
     network = PoolLayer(network, ksize=[1, 2, 2, 1],
                 strides=[1, 2, 2, 1], padding='SAME',
                 pool = tf.nn.max_pool, name ='pool1')
-    """ conv2 """
     network = Conv2dLayer(network, act = tf.nn.relu,
                 shape = [3, 3, 64, 128], strides = [1, 1, 1, 1],
                 padding='SAME', name ='conv2_1')
@@ -81,7 +81,6 @@ def VGG19(rgb):
     network = PoolLayer(network, ksize=[1, 2, 2, 1],
                 strides=[1, 2, 2, 1], padding='SAME',
                 pool = tf.nn.max_pool, name ='pool2')
-    """ conv3 """
     network = Conv2dLayer(network, act = tf.nn.relu,
                 shape = [3, 3, 128, 256], strides = [1, 1, 1, 1],
                 padding='SAME', name ='conv3_1')
@@ -97,7 +96,6 @@ def VGG19(rgb):
     network = PoolLayer(network, ksize=[1, 2, 2, 1],
                 strides=[1, 2, 2, 1], padding='SAME',
                 pool = tf.nn.max_pool, name ='pool3')
-    """ conv4 """
     network = Conv2dLayer(network, act = tf.nn.relu,
                 shape = [3, 3, 256, 512], strides = [1, 1, 1, 1],
                 padding='SAME', name ='conv4_1')
@@ -113,7 +111,6 @@ def VGG19(rgb):
     network = PoolLayer(network, ksize=[1, 2, 2, 1],
                 strides=[1, 2, 2, 1], padding='SAME',
                 pool = tf.nn.max_pool, name ='pool4')
-    """ conv5 """
     network = Conv2dLayer(network, act = tf.nn.relu,
                 shape = [3, 3, 512, 512], strides = [1, 1, 1, 1],
                 padding='SAME', name ='conv5_1')
@@ -129,7 +126,6 @@ def VGG19(rgb):
     network = PoolLayer(network, ksize=[1, 2, 2, 1],
                 strides=[1, 2, 2, 1], padding='SAME',
                 pool = tf.nn.max_pool, name ='pool5')
-    """ fc 6~8 """
     network = FlattenLayer(network, name='flatten')
     network = DenseLayer(network, n_units=4096, act=tf.nn.relu, name='fc6')
     network = DenseLayer(network, n_units=4096, act=tf.nn.relu, name='fc7')

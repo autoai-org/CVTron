@@ -47,7 +47,8 @@ def LapSRNSingleLevel(net_image, net_feature, reuse=False):
 
 def LapSRN(inputs, is_train=False, reuse=False):
     n_level = int(np.log2(config.model.scale))
-    assert n_level >= 1
+    if not n_level >= 1:
+        raise ValueError('n_level >=1 expected but not satisfied')
 
     with tf.variable_scope("LapSRN", reuse=reuse) as vs:
         tl.layers.set_name_reuse(reuse)
@@ -59,8 +60,6 @@ def LapSRN(inputs, is_train=False, reuse=False):
                         W_init=tf.contrib.layers.xavier_initializer(), 
                         name='init_conv')
         net_image = inputs_level
-
-        # 2X for each level 
         net_image1, net_feature1, net_gradient1 = LapSRNSingleLevel(net_image, net_feature, reuse=reuse)
         net_image2, net_feature2, net_gradient2 = LapSRNSingleLevel(net_image1, net_feature1, reuse=True)
 
