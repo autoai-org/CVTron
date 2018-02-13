@@ -1,18 +1,14 @@
 #coding:utf-8
-import os
 import time
 import numpy as np 
 
-import skimage 
 import skimage.io
-import skimage.transform
 
 import tensorflow as tf 
 import tensorlayer as tl 
-from scipy.misc import imread, imresize
+from scipy.misc import imresize
 
-from tensorflow.contrib.slim.python.slim.nets.alexnet import alexnet_v2
-from tensorflow.contrib.slim.python.slim.nets.inception_v3 import (inception_v3,inception_v3_arg_scope,inception_v3_base)
+from tensorflow.contrib.slim.python.slim.nets.inception_v3 import (inception_v3,inception_v3_arg_scope)
 
 slim = tf.contrib.slim
 
@@ -25,7 +21,6 @@ def simple_api(rgb):
     """
     start_time = time.time()
     print("build model started")
-    rgb_scaled = rgb * 255.0
     net_in = tl.layers.InputLayer(rgb, name='input_layer')
     with slim.arg_scope(inception_v3_arg_scope()):
         network = tl.layers.SlimNetsLayer(layer=net_in, slim_layer=inception_v3,
