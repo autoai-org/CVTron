@@ -28,3 +28,4 @@ tqdm==4.19.5
 twine==1.9.1
 urllib3==1.22
 Werkzeug==0.14.1
+coverage
