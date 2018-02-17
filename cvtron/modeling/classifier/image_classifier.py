@@ -21,7 +21,6 @@ class ImageClassifier(object):
             self.x = tf.placeholder("float", [None, 224, 224, 3])
             self.network = simple_api(self.x)
         elif model_name == 'inception_v3':
-            saver = tf.train.Saver()
             from cvtron.model_zoo.inception import simple_api
             self.x = tf.placeholder(tf.float32, shape=[None, 299, 299, 3])
             self.network = simple_api(self.x)
@@ -46,7 +45,7 @@ class ImageClassifier(object):
             tl.files.assign_params(self.sess, params, self.network)
         elif model_name == 'inception_v3':
             saver = tf.train.Saver()
-            saver.restore(self.sess, model_path)
+            saver.restore(self.sess, os.path.join(model_path,'inception_v3.ckpt'))
 
     def classify(self,img_file):
         from cvtron.utils.image_loader import load_image
