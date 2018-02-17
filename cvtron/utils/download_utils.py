@@ -24,7 +24,7 @@ def download(url,path):
         total=file_size, initial=first_byte,
         unit='B', unit_scale=True, desc=filename)
     req = requests.get(url, headers=header, stream=True)
-    with(open(path, 'ab')) as f:
+    with(open(dest, 'ab')) as f:
         for chunk in req.iter_content(chunk_size=1024):
             if chunk:
                 f.write(chunk)
