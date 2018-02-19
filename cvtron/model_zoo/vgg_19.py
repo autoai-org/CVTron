@@ -107,29 +107,19 @@ def VGG19(rgb):
     print("build model started")
     rgb_scaled = rgb * 255.0
     # Convert RGB to BGR
-    if tf.__version__ <= '0.11':
-        red, green, blue = tf.split(3, 3, rgb_scaled)
-    else: # TF 1.0
-        print(rgb_scaled)
-        red, green, blue = tf.split(rgb_scaled, 3, 3)
+    print(rgb_scaled)
+    red, green, blue = tf.split(rgb_scaled, 3, 3)
     if not red.get_shape().as_list()[1:] == [224, 224, 1]:
         raise ValueError('red.get_shape().as_list()[1:] == [224, 224, 1] expected but not satisfied')
     if not green.get_shape().as_list()[1:] == [224, 224, 1]:
         raise ValueError('green.get_shape().as_list()[1:] == [224, 224, 1] expected but not satified')
     if not blue.get_shape().as_list()[1:] == [224, 224, 1]:
         raise ValueError('blue.get_shape().as_list()[1:] == [224, 224, 1] expected but not satisfied')
-    if tf.__version__ <= '0.11':
-        bgr = tf.concat(3, [
-            blue - VGG_MEAN[0],
-            green - VGG_MEAN[1],
-            red - VGG_MEAN[2],
-        ])
-    else:
-        bgr = tf.concat([
-            blue - VGG_MEAN[0],
-            green - VGG_MEAN[1],
-            red - VGG_MEAN[2],
-        ], axis=3)
+    bgr = tf.concat([
+        blue - VGG_MEAN[0],
+        green - VGG_MEAN[1],
+        red - VGG_MEAN[2],
+    ], axis=3)
     assert bgr.get_shape().as_list()[1:] == [224, 224, 3]
 
     net_in = InputLayer(bgr, name='input')
@@ -148,26 +138,16 @@ def simple_api(rgb):
     print("build model started")
     rgb_scaled = rgb * 255.0
     # Convert RGB to BGR
-    if tf.__version__ <= '0.11':
-        red, green, blue = tf.split(3, 3, rgb_scaled)
-    else: # TF 1.0
-        print(rgb_scaled)
-        red, green, blue = tf.split(rgb_scaled, 3, 3)
+    print(rgb_scaled)
+    red, green, blue = tf.split(rgb_scaled, 3, 3)
     assert red.get_shape().as_list()[1:] == [224, 224, 1]
     assert green.get_shape().as_list()[1:] == [224, 224, 1]
     assert blue.get_shape().as_list()[1:] == [224, 224, 1]
-    if tf.__version__ <= '0.11':
-        bgr = tf.concat(3, [
-            blue - VGG_MEAN[0],
-            green - VGG_MEAN[1],
-            red - VGG_MEAN[2],
-        ])
-    else:
-        bgr = tf.concat([
-            blue - VGG_MEAN[0],
-            green - VGG_MEAN[1],
-            red - VGG_MEAN[2],
-        ], axis=3)
+    bgr = tf.concat([
+        blue - VGG_MEAN[0],
+        green - VGG_MEAN[1],
+        red - VGG_MEAN[2],
+    ], axis=3)
     assert bgr.get_shape().as_list()[1:] == [224, 224, 3]
 
     """ input layer """
