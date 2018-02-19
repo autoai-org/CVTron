@@ -3,10 +3,20 @@ python:
   - "3.5"
   - "3.5-dev"  # 3.5 development branch
   - "3.6"
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 # command to install dependencies
 install:
   - pip install -r requirements-cpu.txt
   - python setup.py install
+env:
+  global:
+    - GIT_COMMITTED_AT=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then git log -1 --pretty=format:%ct; else git log -1 --skip 1 --pretty=format:%ct; fi)
 # command to run tests
 script:
   - coverage run tests/classifier.py
+after_script:
+  - coverage xml
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
