@@ -1,5 +1,6 @@
 #coding:utf-8
 import math
+import os
 import tensorflow as tf 
 
 from tensorflow.contrib.slim.python.slim.nets.inception_v3 import (inception_v3,inception_v3_arg_scope)
@@ -90,8 +91,8 @@ class ClassifierTrainer(object):
             num_steps = self.epochs * int(num_batches)
             slim.learning.train(
                 train_op,
-                logdir=FLAGS.log_dir,
-                init_fn=get_init_fn(FLAGS.checkpoint),
+                logdir=self.log_dir,
+                init_fn=get_init_fn(self.checkpoint),
                 number_of_steps=num_steps,
                 save_summaries_secs=300,
                 save_interval_secs=300
