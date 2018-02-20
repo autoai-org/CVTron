@@ -4,7 +4,7 @@ import random
 import sys
 import threading
 
-#import google3
+# import google3
 import numpy as np
 import tensorflow as tf
 
@@ -91,34 +91,33 @@ def _convert_to_example(image_data, filename, label, label_text, height, width):
   Args:
     image_data: string, JPEG encoding of RGB image
     filename: string, filename of an image
-    label: list of floats, identifier for the ground truth 
-    label_text: list of strings, e.g. ['airplane board', 'airplane ride'] 
+    label: list of floats, identifier for the ground truth
+    label_text: list of strings, e.g. ['airplane board', 'airplane ride']
     height: integer, image height in pixels
     width: integer, image width in pixels
   Returns:
     Example proto
   """
 
-  colorspace = 'RGB'
+  colorspace = b'RGB'
   channels = 3
-  image_format = 'JPEG'
+  image_format = b'JPEG'
 
   obj = []
   verb = []
-  
+
   for text in label_text:
    assert len(text) == 2
    obj.append(text[0])
    verb.append(text[1])
 
-  
   example = tf.train.Example(features=tf.train.Features(feature={
       'image/height': _int64_feature(height),
       'image/width': _int64_feature(width),
       'image/colorspace': _bytes_feature(colorspace),
-      'image/channels': _int64_feature(channels), 
+      'image/channels': _int64_feature(channels),
       'image/format': _bytes_feature(image_format),
-      'image/filename': _bytes_feature(filename),
+      'image/filename': _bytes_feature(os.path.basename(filename).encode()),
       'image/encoded': _bytes_feature(image_data),
       'image/class/label': _bytes_feature(label),   # of shape (600,)
       'image/class/object': _bytes_feature(obj),
@@ -145,7 +144,8 @@ class ImageCoder(object):
 
     # Initializes function that decodes RGB JPEG data.
     self._decode_jpeg_data = tf.placeholder(dtype=tf.string)
-    self._decode_jpeg = tf.image.decode_jpeg(self._decode_jpeg_data, channels=3)
+    self._decode_jpeg = tf.image.decode_jpeg(
+        self._decode_jpeg_data, channels=3)
 
   def png_to_jpeg(self, image_data):
     return self._sess.run(self._png_to_jpeg,
@@ -176,7 +176,8 @@ def _process_image(data_dir, filename, coder):
   """
   # Read the image file.
   file_path = os.path.join(data_dir, filename)
-  image_data = tf.gfile.FastGFile(file_path, 'r').read()
+  with tf.gfile.FastGFile(file_path, 'rb') as f:
+    image_data = f.read()
 
   # Decode the RGB JPEG.
   image = coder.decode_jpeg(image_data)
@@ -196,7 +197,7 @@ def _get_output_filename(output_dir, name, shard, num_shards):
     return output_file
 
 
-def _process_dataset(name, data_dir, filenames_file, labels_file, 
+def _process_dataset(name, data_dir, filenames_file, labels_file,
                     num_shards, label_to_text, output_dir):
   """Process a complete data set and save it as a TFRecord.
   Args:
@@ -209,17 +210,17 @@ def _process_dataset(name, data_dir, filenames_file, labels_file,
       0 --> 'airplane, board'
     output_dir: string, path to the output directory
   """
-      
+
   lines = tf.gfile.FastGFile(filenames_file, 'r').readlines()
   filenames = [l.strip() for l in lines]
-  
+
   lines = tf.gfile.FastGFile(labels_file, 'r').readlines()
-  labels = [] 
+  labels = []
   labels_text = []
   for l in lines:
     parts = l.strip().split(' ')
-    #Encode label to num_class-dim vectors
-    encoded_label = np.zeros(FLAGS.num_classes, dtype=np.float32) 
+    # Encode label to num_class-dim vectors
+    encoded_label = np.zeros(FLAGS.num_classes, dtype=np.float32)
     text_list = []
     for part in parts:
       encoded_label[int(part)] = 1.0
@@ -239,32 +240,37 @@ def _process_dataset(name, data_dir, filenames_file, labels_file,
   labels_text = [labels_text[i] for i in shuffled_index]
   """
 
-
   # Break all images <num_shards> shards
   spacing = np.linspace(0, len(filenames), num_shards + 1).astype(np.int)
   ranges = []
-  for i in xrange(len(spacing) - 1):
+  for i in range(len(spacing) - 1):
     ranges.append([spacing[i], spacing[i+1]])
 
   # Create a generic TensorFlow-based utility for converting all image codings
   coder = ImageCoder()
-  
+
   counter = 0
-  for i in xrange(len(ranges)):
+  for i in range(len(ranges)):
     # Open new TFRecord file
     tf_filename = _get_output_filename(output_dir, name, i, num_shards)
     files_in_shard = np.arange(ranges[i][0], ranges[i][1], dtype=int)
     shard_counter = 0
-    
+
     with tf.python_io.TFRecordWriter(tf_filename) as writer:
       for j in files_in_shard:
         filename = filenames[j]
         label = labels[j]
         text = labels_text[j]
-        
+        encoded_text = []
+        for each in text:
+          bList = []
+          for each_r in each:
+            bList.append(each_r.encode())
+          encoded_text.append(bList)
+
         image_data, height, width = _process_image(data_dir, filename, coder)
       
-        example = _convert_to_example(image_data, filename, label, text, height, width)
+        example = _convert_to_example(image_data, filename, label, encoded_text, height, width)
         writer.write(example.SerializeToString())
 
         shard_counter += 1
@@ -323,8 +329,8 @@ def main(unused_argv):
   # Build a map from label to object-verb descriptions.
   label_text_file = os.path.join(FLAGS.data_dir, FLAGS.label_text)
   label_to_text = _build_label_lookup(label_text_file)
-  #print(label_to_text[0])
-  #print(label_to_text[578])
+  # print(label_to_text[0])
+  # print(label_to_text[578])
   
   filenames_train_file = os.path.join(FLAGS.data_dir, FLAGS.filenames_train)
   filenames_test_file = os.path.join(FLAGS.data_dir, FLAGS.filenames_test)
