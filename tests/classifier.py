@@ -1,6 +1,7 @@
-from cvtron.modeling.classifier.api import *
 import unittest
 import math
+from cvtron.modeling.classifier.api import *
+
 class TestClassifier(unittest.TestCase):
     def test_vgg(self):
         a=simple_classify_api("tests/tiger.jpeg")
