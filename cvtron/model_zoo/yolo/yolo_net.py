@@ -1,3 +1,4 @@
+#coding:utf-8
 import tensorflow as tf 
 import numpy as np 
 import re
@@ -135,14 +136,14 @@ class YoloNet(Net):
         
         return inter_square/(square1 + square2 - inter_square + 1e-6)
 
-    def cond1(self, num, object_num, loss, predict, label, nilboy):
+    def cond1(self, num, object_num, loss, predict, label, results):
         """
         if num < object_num
         """
         return num < object_num
 
 
-    def body1(self, num, object_num, loss, predict, labels, nilboy):
+    def body1(self, num, object_num, loss, predict, labels, results):
         """
         calculate loss
         Args:
@@ -199,7 +200,6 @@ class YoloNet(Net):
 
         for y in range(self.cell_size):
             for x in range(self.cell_size):
-                #nilboy
                 base_boxes[y, x, :] = [self.image_size / self.cell_size * x, self.image_size / self.cell_size * y, 0, 0]
         base_boxes = np.tile(np.resize(base_boxes, [self.cell_size, self.cell_size, 1, 4]), [1, 1, self.boxes_per_cell, 1])
 
@@ -260,9 +260,9 @@ class YoloNet(Net):
                     tf.nn.l2_loss(I * (p_sqrt_w - sqrt_w))/ self.image_size +
                     tf.nn.l2_loss(I * (p_sqrt_h - sqrt_h))/self.image_size) * self.coord_scale
 
-        nilboy = I
+        results = I
 
-        return num + 1, object_num, [loss[0] + class_loss, loss[1] + object_loss, loss[2] + noobject_loss, loss[3] + coord_loss], predict, labels, nilboy
+        return num + 1, object_num, [loss[0] + class_loss, loss[1] + object_loss, loss[2] + noobject_loss, loss[3] + coord_loss], predict, labels, results
 
 
     def loss(self, predicts, labels, objects_num):
@@ -282,11 +282,11 @@ class YoloNet(Net):
             predict = predicts[i, :, :, :]
             label = labels[i, :, :]
             object_num = objects_num[i]
-            nilboy = tf.ones([7,7,2])
-            tuple_results = tf.while_loop(self.cond1, self.body1, [tf.constant(0), object_num, [class_loss, object_loss, noobject_loss, coord_loss], predict, label, nilboy])
+            results = tf.ones([7,7,2])
+            tuple_results = tf.while_loop(self.cond1, self.body1, [tf.constant(0), object_num, [class_loss, object_loss, noobject_loss, coord_loss], predict, label, results])
             for j in range(4):
                 loss[j] = loss[j] + tuple_results[2][j]
-            nilboy = tuple_results[5]
+            results = tuple_results[5]
 
         tf.add_to_collection('losses', (loss[0] + loss[1] + loss[2] + loss[3])/self.batch_size)
         tf.summary.scalar('class_loss', loss[0]/self.batch_size)
@@ -295,4 +295,4 @@ class YoloNet(Net):
         tf.summary.scalar('coord_loss', loss[3]/self.batch_size)
         tf.summary.scalar('weight_loss', tf.add_n(tf.get_collection('losses')) - (loss[0] + loss[1] + loss[2] + loss[3])/self.batch_size )
 
-        return tf.add_n(tf.get_collection('losses'), name='total_loss'), nilboy
+        return tf.add_n(tf.get_collection('losses'), name='total_loss'), results

@@ -1,8 +1,9 @@
 import skimage
 import skimage.io
 import skimage.transform
- 
-def load_image(path,height,width):
+
+
+def load_image(path, height, width):
     img = skimage.io.imread(path)
     img = img / 255.0
     assert (0 <= img).all() and (img <= 1.0).all()
