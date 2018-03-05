@@ -18,6 +18,7 @@ class YoloNet(Net):
             self.noobject_scale = float(net_params['noobject_scale'])
             self.class_scale = float(net_params['class_scale'])
             self.coord_scale = float(net_params['coord_scale'])
+
     def inference(self, images):
         """Build the yolo model
         Args:
@@ -52,26 +53,26 @@ class YoloNet(Net):
         temp_conv = self.max_pool(temp_conv, [2, 2], 2)
 
         for i in range(4):
-        temp_conv = self.conv2d('conv' + str(conv_num), temp_conv, [1, 1, 512, 256], stride=1)
-        conv_num += 1
+            temp_conv = self.conv2d('conv' + str(conv_num), temp_conv, [1, 1, 512, 256], stride=1)
+            conv_num += 1
 
-        temp_conv = self.conv2d('conv' + str(conv_num), temp_conv, [3, 3, 256, 512], stride=1)
-        conv_num += 1
+            temp_conv = self.conv2d('conv' + str(conv_num), temp_conv, [3, 3, 256, 512], stride=1)
+            conv_num += 1
 
-        temp_conv = self.conv2d('conv' + str(conv_num), temp_conv, [1, 1, 512, 512], stride=1)
-        conv_num += 1
+            temp_conv = self.conv2d('conv' + str(conv_num), temp_conv, [1, 1, 512, 512], stride=1)
+            conv_num += 1
 
-        temp_conv = self.conv2d('conv' + str(conv_num), temp_conv, [3, 3, 512, 1024], stride=1)
-        conv_num += 1
+            temp_conv = self.conv2d('conv' + str(conv_num), temp_conv, [3, 3, 512, 1024], stride=1)
+            conv_num += 1
 
-        temp_conv = self.max_pool(temp_conv, [2, 2], 2)
+            temp_conv = self.max_pool(temp_conv, [2, 2], 2)
 
         for i in range(2):
-        temp_conv = self.conv2d('conv' + str(conv_num), temp_conv, [1, 1, 1024, 512], stride=1)
-        conv_num += 1
+            temp_conv = self.conv2d('conv' + str(conv_num), temp_conv, [1, 1, 1024, 512], stride=1)
+            conv_num += 1
 
-        temp_conv = self.conv2d('conv' + str(conv_num), temp_conv, [3, 3, 512, 1024], stride=1)
-        conv_num += 1
+            temp_conv = self.conv2d('conv' + str(conv_num), temp_conv, [3, 3, 512, 1024], stride=1)
+            conv_num += 1
 
         temp_conv = self.conv2d('conv' + str(conv_num), temp_conv, [3, 3, 1024, 1024], stride=1)
         conv_num += 1
@@ -100,6 +101,7 @@ class YoloNet(Net):
         predicts = local2
 
         return predicts
+
     def iou(self, boxes1, boxes2):
         """calculate ious
         Args:
@@ -108,10 +110,10 @@ class YoloNet(Net):
         Return:
         iou: 3-D tensor [CELL_SIZE, CELL_SIZE, BOXES_PER_CELL]
         """
-        boxes1 = tf.pack([boxes1[:, :, :, 0] - boxes1[:, :, :, 2] / 2, boxes1[:, :, :, 1] - boxes1[:, :, :, 3] / 2,
+        boxes1 = tf.stack([boxes1[:, :, :, 0] - boxes1[:, :, :, 2] / 2, boxes1[:, :, :, 1] - boxes1[:, :, :, 3] / 2,
                         boxes1[:, :, :, 0] + boxes1[:, :, :, 2] / 2, boxes1[:, :, :, 1] + boxes1[:, :, :, 3] / 2])
         boxes1 = tf.transpose(boxes1, [1, 2, 3, 0])
-        boxes2 =  tf.pack([boxes2[0] - boxes2[2] / 2, boxes2[1] - boxes2[3] / 2,
+        boxes2 =  tf.stack([boxes2[0] - boxes2[2] / 2, boxes2[1] - boxes2[3] / 2,
                         boxes2[0] + boxes2[2] / 2, boxes2[1] + boxes2[3] / 2])
 
         #calculate the left up point
@@ -196,9 +198,9 @@ class YoloNet(Net):
         base_boxes = np.zeros([self.cell_size, self.cell_size, 4])
 
         for y in range(self.cell_size):
-        for x in range(self.cell_size):
-            #nilboy
-            base_boxes[y, x, :] = [self.image_size / self.cell_size * x, self.image_size / self.cell_size * y, 0, 0]
+            for x in range(self.cell_size):
+                #nilboy
+                base_boxes[y, x, :] = [self.image_size / self.cell_size * x, self.image_size / self.cell_size * y, 0, 0]
         base_boxes = np.tile(np.resize(base_boxes, [self.cell_size, self.cell_size, 1, 4]), [1, 1, self.boxes_per_cell, 1])
 
         predict_boxes = base_boxes + predict_boxes
@@ -216,7 +218,6 @@ class YoloNet(Net):
 
         #calculate no_I tensor [CELL_SIZE, CELL_SIZE, BOXES_PER_CELL]
         no_I = tf.ones_like(I, dtype=tf.float32) - I 
-
 
         p_C = predict[:, :, self.num_classes:self.num_classes + self.boxes_per_cell]
 
@@ -278,21 +279,20 @@ class YoloNet(Net):
         coord_loss = tf.constant(0, tf.float32)
         loss = [0, 0, 0, 0]
         for i in range(self.batch_size):
-        predict = predicts[i, :, :, :]
-        label = labels[i, :, :]
-        object_num = objects_num[i]
-        nilboy = tf.ones([7,7,2])
-        tuple_results = tf.while_loop(self.cond1, self.body1, [tf.constant(0), object_num, [class_loss, object_loss, noobject_loss, coord_loss], predict, label, nilboy])
-        for j in range(4):
-            loss[j] = loss[j] + tuple_results[2][j]
-        nilboy = tuple_results[5]
+            predict = predicts[i, :, :, :]
+            label = labels[i, :, :]
+            object_num = objects_num[i]
+            nilboy = tf.ones([7,7,2])
+            tuple_results = tf.while_loop(self.cond1, self.body1, [tf.constant(0), object_num, [class_loss, object_loss, noobject_loss, coord_loss], predict, label, nilboy])
+            for j in range(4):
+                loss[j] = loss[j] + tuple_results[2][j]
+            nilboy = tuple_results[5]
 
         tf.add_to_collection('losses', (loss[0] + loss[1] + loss[2] + loss[3])/self.batch_size)
-
-        tf.scalar_summary('class_loss', loss[0]/self.batch_size)
-        tf.scalar_summary('object_loss', loss[1]/self.batch_size)
-        tf.scalar_summary('noobject_loss', loss[2]/self.batch_size)
-        tf.scalar_summary('coord_loss', loss[3]/self.batch_size)
-        tf.scalar_summary('weight_loss', tf.add_n(tf.get_collection('losses')) - (loss[0] + loss[1] + loss[2] + loss[3])/self.batch_size )
+        tf.summary.scalar('class_loss', loss[0]/self.batch_size)
+        tf.summary.scalar('object_loss', loss[1]/self.batch_size)
+        tf.summary.scalar('noobject_loss', loss[2]/self.batch_size)
+        tf.summary.scalar('coord_loss', loss[3]/self.batch_size)
+        tf.summary.scalar('weight_loss', tf.add_n(tf.get_collection('losses')) - (loss[0] + loss[1] + loss[2] + loss[3])/self.batch_size )
 
         return tf.add_n(tf.get_collection('losses'), name='total_loss'), nilboy

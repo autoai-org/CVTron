@@ -7,7 +7,11 @@ import skimage.transform
 
 import tensorflow as tf 
 import tensorlayer as tl
-from tensorlayer.layers import * 
+from tensorlayer.layers import Conv2dLayer
+from tensorlayer.layers import PoolLayer
+from tensorlayer.layers import FlattenLayer
+from tensorlayer.layers import DenseLayer
+from tensorlayer.layers import InputLayer
 
 from cvtron.model_zoo.constant import VGG_MEAN
 

@@ -6,7 +6,7 @@ import tensorlayer as tl
 import numpy as np 
 from cvtron.modeling.base.singleton import singleton
 from cvtron.utils.config_loader import MODEL_ZOO_PATH
-from cvtron.model_zoo.lapsrn import LapSRN
+from cvtron.model_zoo.lapsrn.lapsrn import LapSRN
 @singleton
 class ImageUpsampler(object):
     def __init__(self,model_name='laplacian', model_path=MODEL_ZOO_PATH):

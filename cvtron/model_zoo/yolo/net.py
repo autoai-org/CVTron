@@ -49,8 +49,8 @@ class Net(object):
     var = self._variable_on_cpu(name, shape,
       tf.truncated_normal_initializer(stddev=stddev, dtype=tf.float32), pretrain, train)
     if wd is not None:
-      weight_decay = tf.multiply(tf.nn.l2_loss(var), wd, name='weight_loss')
-      tf.add_to_collection('losses', weight_decay)
+      self.weight_decay = tf.multiply(tf.nn.l2_loss(var), wd, name='weight_loss')
+      tf.add_to_collection('losses', self.weight_decay)
     return var 
 
   def conv2d(self, scope, input, kernel_size, stride=1, pretrain=True, train=True):
