@@ -6,6 +6,7 @@ from urllib.request import urlopen
 from cvtron.model_zoo.constant import VGG_NPY_URL
 from cvtron.model_zoo.constant import INCEPTION_CKPT_URL
 from cvtron.model_zoo.constant import LAPSRN_URL
+from cvtron.model_zoo.constant import YOLO_TINY_CKPT_URL
 from cvtron.utils.config_loader import MODEL_ZOO_PATH
 
 
@@ -45,3 +46,7 @@ def download_inception_v3(path=MODEL_ZOO_PATH):
 
 def download_lapsrn(path=MODEL_ZOO_PATH):
     download(LAPSRN_URL, path)
+
+
+def download_yolo_tiny(path=MODEL_ZOO_PATH):
+    download(YOLO_TINY_CKPT_URL, path)
