@@ -15,6 +15,7 @@ class ObjectDetector(object):
         self.model_path = model_path
         if model_name not in ['yolo', 'ssd', 'yolo_tiny']:
             raise NotImplementedError
+        self.download(self.model_path)
         self.sess = tf.Session()
         if model_name == 'yolo_tiny':
             common_params = {'image_size': 448, 'num_classes': 20,
@@ -29,6 +30,7 @@ class ObjectDetector(object):
         else:
             raise NotImplementedError
         self._init_model_()
+
     def _init_model_(self):
         if self.model_name not in ['yolo', 'ssd', 'yolo_tiny']:
             raise NotImplementedError
@@ -46,7 +48,8 @@ class ObjectDetector(object):
             image = image.astype(np.float32)
             image = image / 255.0 * 2 - 1
             image = np.reshape(image, (1, 448, 448, 3))
-            predict = self.sess.run(self.predicts, feed_dict={self.image: image})
+            predict = self.sess.run(
+                self.predicts, feed_dict={self.image: image})
             xmin, ymin, xmax, ymax, class_num = self.process_predicts(predict)
             result = {
                 'xmin': xmin,
