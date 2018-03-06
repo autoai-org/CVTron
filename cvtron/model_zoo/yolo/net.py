@@ -7,7 +7,7 @@ class Net(object):
     """Base Net class 
     """
 
-    def __init__(self, common_params, net_params):
+    def __init__(self, common_params, net_params, isTest):
         """
         common_params: a params dict
         net_params: a params dict
@@ -16,6 +16,17 @@ class Net(object):
         self.pretrained_collection = []
         # trainable variable collection
         self.trainable_collection = []
+        self.image_size = int(common_params['image_size'])
+        self.num_classes = int(common_params['num_classes'])
+        self.cell_size = int(net_params['cell_size'])
+        self.boxes_per_cell = int(net_params['boxes_per_cell'])
+        self.batch_size = int(common_params['batch_size'])
+        self.weight_decay = float(net_params['weight_decay'])
+        if not isTest:
+            self.object_scale = float(net_params['object_scale'])
+            self.noobject_scale = float(net_params['noobject_scale'])
+            self.class_scale = float(net_params['class_scale'])
+            self.coord_scale = float(net_params['coord_scale'])
 
     def _variable_on_cpu(self, name, shape, initializer, pretrain=True, train=True):
         """Helper to create a Variable stored on CPU memory.

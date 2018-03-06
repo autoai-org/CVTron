@@ -102,9 +102,3 @@ class YoloNet(Net):
         predicts = local2
 
         return predicts
-
-    def cond1(self, num, object_num, loss, predict, label, results):
-        """
-        if num < object_num
-        """
-        return num < object_num
