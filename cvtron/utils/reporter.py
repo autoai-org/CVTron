@@ -23,9 +23,4 @@ def print_detect_result(result):
 def report_hardware():
     from tensorflow.python.client import device_lib
     local_device_protos = device_lib.list_local_devices()
-    devices = local_device_protos
-    result = {
-        'gpu':devices[1].physical_device_desc
-    }
-    print(result)
-    return result
+    return local_device_protos
