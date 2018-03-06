@@ -1,4 +1,11 @@
+#coding:utf-8
+import unittest
 from cvtron.modeling.detector.api import simple_detect_api
 
-a = simple_detect_api("tests/tiger.jpeg")
-print(a)
+class TestDetector(unittest.TestCase):
+    def test_yolo_tiny(self):
+        a = simple_detect_api("tests/tiger.jpeg")
+        self.assertIsNone(a)
+
+if __name__ == '__main__':
+    unittest.main()

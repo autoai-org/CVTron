@@ -17,6 +17,7 @@ env:
 # command to run tests
 script:
   - coverage run tests/classifier.py
+  - coverage run tests/detector.py
 after_script:
   - coverage xml
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
