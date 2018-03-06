@@ -10,3 +10,11 @@ def print_prob(prob, limit=5):
     topn = [(synset[pred[0][i]], -prob[i]) for i in range(limit)]
     print("Top "+str(limit)+": ", topn)
     return topn
+
+def print_detect_result(result):
+    print('xmin:'+str(result['xmin']))
+    print('ymin:'+str(result['ymin']))
+    print('xmax:'+str(result['xmax']))
+    print('ymax:'+str(result['ymax']))
+    print('class_num'+str(result['class_num']))
+    return result

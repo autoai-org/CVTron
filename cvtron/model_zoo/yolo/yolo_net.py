@@ -6,7 +6,7 @@ from cvtron.model_zoo.yolo.net import Net
 
 class YoloNet(Net):
     def __init__(self, common_params, net_params, test=False):
-        super(YoloNet, self).__init__(common_params, net_params)
+        super(YoloNet, self).__init__(common_params, net_params, isTest=test)
         self.image_size = int(common_params['image_size'])
         self.num_classes = int(common_params['num_classes'])
         self.cell_size = int(net_params['cell_size'])

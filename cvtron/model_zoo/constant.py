@@ -9,4 +9,4 @@ YOLO_TINY_CKPT_URL = 'https://deepbase-1251068397.cos.ap-guangzhou.myqcloud.com/
 INCEPTION_CKPT_URL = 'http://temp.zhitantech.com/static/inception_v3.ckpt'
 VGG_NPY_URL = 'http://temp.zhitantech.com/static/vgg19.npy'
 LAPSRN_URL = 'http://temp.zhitantech.com/static/lapsrn.npz'
-YOLO_TINY_CKPT_URL = 'https://deepbase-1251068397.cos.ap-guangzhou.myqcloud.com/yolo_tiny.ckpt'
+YOLO_TINY_CKPT_URL = 'http://temp.zhitantech.com/static/yolo_tiny.ckpt'

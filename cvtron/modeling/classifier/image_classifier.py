@@ -29,14 +29,14 @@ class ImageClassifier(object):
             raise ValueError('Only VGG 19 and Inception V3 are allowed')
         y = self.network.outputs
         self.probs = tf.nn.softmax(y, name="prob")
-        self._init_model_(model_name, model_path)
+        self._init_model_()
 
-    def _init_model_(self, model_name='vgg_19', model_path=MODEL_ZOO_PATH):
-        if model_name not in ['vgg_19', 'inception_v3']:
+    def _init_model_(self):
+        if self.model_name not in ['vgg_19', 'inception_v3']:
             raise ValueError('Only VGG 19 and Inception V3 are allowed')
-        if model_name == 'vgg_19':
+        if self.model_name == 'vgg_19':
             tl.layers.initialize_global_variables(self.sess)
-            npz = np.load(os.path.join(model_path, 'vgg19.npy'),
+            npz = np.load(os.path.join(self.model_path, 'vgg19.npy'),
                           encoding='latin1').item()
             params = []
             for val in sorted(npz.items()):
@@ -45,10 +45,10 @@ class ImageClassifier(object):
                 print("  Loading %s: %s, %s" % (val[0], W.shape, b.shape))
                 params.extend([W, b])
             tl.files.assign_params(self.sess, params, self.network)
-        elif model_name == 'inception_v3':
+        elif self.model_name == 'inception_v3':
             saver = tf.train.Saver()
             saver.restore(self.sess, os.path.join(
-                model_path, 'inception_v3.ckpt'))
+                self.model_path, 'inception_v3.ckpt'))
 
     def classify(self, img_file):
         from cvtron.utils.image_loader import load_image

@@ -12,7 +12,7 @@ class YoloTinyNet(Net):
         common params: a params dict
         net_params   : a params dict
         """
-        super(YoloTinyNet, self).__init__(common_params, net_params)
+        super(YoloTinyNet, self).__init__(common_params, net_params,isTest=test)
         # process params
         self.image_size = int(common_params['image_size'])
         self.num_classes = int(common_params['num_classes'])
