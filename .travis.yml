@@ -1,4 +1,6 @@
 language: python
+notifications:
+  slack: cvtron:zpn5EYMgd1chDwtF1goXhpyb#bots
 python:
   - "3.5"
   - "3.5-dev"  # 3.5 development branch
