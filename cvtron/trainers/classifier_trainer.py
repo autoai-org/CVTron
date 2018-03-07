@@ -41,6 +41,9 @@ class ClassifierTrainer(object):
         self.num_classes = num_classes
         self.is_fine_tune = is_fine_tune
 
+    def preprocess(self):
+        pass
+
     def bootstrap(self):
         if not tf.gfile.Exists(self.log_dir):
             tf.gfile.MakeDirs(self.log_dir)

@@ -4,7 +4,7 @@ from cvtron.modeling.detector.api import simple_detect_api
 
 class TestDetector(unittest.TestCase):
     def test_yolo_tiny(self):
-        a = simple_detect_api("tests/tiger.jpeg")
+        a = simple_detect_api("tests/cat.jpg")
         self.assertIsNotNone(a)
 
 if __name__ == '__main__':

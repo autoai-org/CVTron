@@ -6,7 +6,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/721858de11e15ef33f2a/maintainability)](https://codeclimate.com/github/cv-group/CVTron/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/721858de11e15ef33f2a/test_coverage)](https://codeclimate.com/github/cv-group/CVTron/test_coverage)
 [![Documentation Status](https://readthedocs.org/projects/cvtron/badge/?version=latest)](http://cvtron.readthedocs.io/en/latest/?badge=latest)
-[![Slack](https://img.shields.io/badge/chat-on%20slack-7289da.svg)](https://discord.gg/fHYJXKX)
+[![Slack](https://img.shields.io/badge/chat-on%20slack-7289da.svg)](https://cvtron.slack.com)
 
 CV Tron is a Computer Vision Library for industry use. It tries to provide an out-of-the-box experience for our customers and help them build on top of commonly used algorithms and models.
 
@@ -22,7 +22,7 @@ If you or your affiliation are going to use cv tron in industry and for commerci
 
 # Community Support
 
-Get Community Support on [Slack](https://cvtron.slack.com)
+Get Community Support on [Slack](https://join.slack.com/t/cvtron/shared_invite/enQtMzI3MDMzNjM3NzY2LTY1YWRiZmQwNDE5ODAyYTRhNGFhOGM2OWEzYjVlNzZmZDc0YjMxYmYyMzk2Y2FiYmU4YzhmYTViNjU3ZTJlYjQ)
 
 # Contribution 
 
