@@ -44,5 +44,4 @@ def report_hardware():
                 'compute_capability': compute_capability
             }
             result['gpu'].append(device_obj)
-    print(result)
     return result
