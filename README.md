@@ -22,7 +22,7 @@ If you or your affiliation are going to use cv tron in industry and for commerci
 
 # Community Support
 
-Get Community Support on [Discord](https://discord.gg/fHYJXKX)
+Get Community Support on [Slack](https://cvtron.slack.com)
 
 # Contribution 
 
