@@ -22,6 +22,11 @@ If neither of these seem appealing, please post on our [slack channel](https://j
 
 If you need a mentor to help you get started, feel free to ask on our [slack channel](https://join.slack.com/t/cvtron/shared_invite/enQtMzI3MDMzNjM3NzY2LTY1YWRiZmQwNDE5ODAyYTRhNGFhOGM2OWEzYjVlNzZmZDc0YjMxYmYyMzk2Y2FiYmU4YzhmYTViNjU3ZTJlYjQ)
 
+There is only one thing need to be mentioned here is, when you are going to fulfil an algorithm or model, please make sure you have read its open source license or related patent. Since CV Tron is designed for commercial and industry use, some kind of non-commercial license may not be capable for this project. If you are not sure, please submit a issue first. 
+
+If you or your affiliations are using this library, you are welcome to become a backer for Unarxiv Foundation for further support.
+
+
 ### Instructions to submit code
 
 Before you submit code, please talk to us via the issue tracker so we know you are working on it.

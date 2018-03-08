@@ -26,9 +26,7 @@ Get Community Support on [Slack](https://join.slack.com/t/cvtron/shared_invite/e
 
 # Contribution 
 
-When you are going to fulfil an algorithm or model, please make sure you have read its open source license or related patent. Since CV Tron is designed for commercial and industry use, some kind of non-commercial license may not be capable for this project. If you are not sure, please submit a issue first. 
-
-If you or your affiliations are using this library, you are welcome to become a backer for Unarxiv Foundation for further support.
+Please visit [Contributing guidelines](https://github.com/cv-group/CVTron/blob/master/CONTRIBUTING.md)
 
 # Side Project
 
