@@ -1,6 +1,6 @@
 #coding:utf-8
 import os
-from cvtron.trainers.classifier_trainer import ClassifierTrainer
+from cvtron.trainers.classifier.classifier_trainer import ClassifierTrainer
 from cvtron.utils.config_loader import MODEL_ZOO_PATH
 trainer = ClassifierTrainer(batch_size=64, 
                             epochs=100, 
