@@ -8,7 +8,7 @@ html5lib==1.0.1
 idna==2.6
 Markdown==2.6.11
 networkx==2.1
-numpy==1.14.1
+numpy==1.14.2
 Pillow==5.0.0
 pkginfo==1.4.1
 protobuf==3.5.2
