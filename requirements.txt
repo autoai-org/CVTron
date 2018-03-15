@@ -8,12 +8,12 @@ html5lib==1.0.1
 idna==2.6
 Markdown==2.6.11
 networkx==2.1
-numpy==1.14.1
+numpy==1.14.2
 Pillow==5.0.0
-pkginfo==1.4.1
+pkginfo==1.4.2
 protobuf==3.5.2
 pyparsing==2.2.0
-python-dateutil==2.6.1
+python-dateutil==2.7.0
 pytz==2018.3
 PyWavelets==0.5.2
 requests==2.18.4
@@ -24,8 +24,8 @@ six==1.11.0
 tensorflow-gpu==1.5.0
 tensorflow-tensorboard==1.5.1
 tensorlayer==1.7.3
-tqdm==4.19.6
-twine==1.9.1
+tqdm==4.19.7
+twine==1.10.0
 urllib3==1.22
 Werkzeug==0.14.1
 coverage
