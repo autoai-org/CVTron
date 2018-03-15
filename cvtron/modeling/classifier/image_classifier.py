@@ -18,13 +18,19 @@ class ImageClassifier(object):
         self.download(self.model_path)
         self.sess = tf.InteractiveSession()
         if model_name == 'vgg_19':
-            from cvtron.model_zoo.vgg_19 import simple_api
+            from cvtron.model_zoo.vgg.vgg_19 import VGG19
+            vgg19 = VGG19()
             self.x = tf.placeholder("float", [None, 224, 224, 3])
-            self.network = simple_api(self.x)
+            self.network = vgg19.inference(self.x)
         elif model_name == 'inception_v3':
-            from cvtron.model_zoo.inception import simple_api
+            from cvtron.model_zoo.inception.inceptionV3 import InceptionV3
+            inception_config = {
+                'num_classes': 1001,
+                'is_training': False
+            }
+            inceptionv3 = InceptionV3(inception_config)
             self.x = tf.placeholder(tf.float32, shape=[None, 299, 299, 3])
-            self.network = simple_api(self.x)
+            self.network = inceptionv3.inference(self.x)
         else:
             raise ValueError('Only VGG 19 and Inception V3 are allowed')
         y = self.network.outputs
