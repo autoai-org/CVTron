@@ -10,7 +10,7 @@ Markdown==2.6.11
 networkx==2.1
 numpy==1.14.2
 Pillow==5.0.0
-pkginfo==1.4.1
+pkginfo==1.4.2
 protobuf==3.5.2
 pyparsing==2.2.0
 python-dateutil==2.7.0
