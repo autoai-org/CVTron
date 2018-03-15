@@ -1,8 +1,10 @@
 #coding:utf-8
 import numpy as np
 import tensorflow as tf
+import tensorlayer as tl
+
 import misc
-import tensorlayer as tl 
+
 
 def conv_block(input, num_out):
     with tf.variable_scope("block1"):

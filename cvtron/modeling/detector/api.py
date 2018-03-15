@@ -1,5 +1,6 @@
 # coding:utf-8
 import os
+
 from cvtron.modeling.detector.object_detector import ObjectDetector
 from cvtron.utils.config_loader import MODEL_ZOO_PATH
 from cvtron.utils.reporter import print_detect_result

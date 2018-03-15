@@ -1,6 +1,8 @@
-import unittest
 import math
+import unittest
+
 from cvtron.modeling.classifier.api import simple_classify_api
+
 
 class TestClassifier(unittest.TestCase):
     def test_vgg(self):

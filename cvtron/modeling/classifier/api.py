@@ -1,8 +1,9 @@
 # coding:utf-8
 import os
+
 from cvtron.modeling.classifier.image_classifier import ImageClassifier
-from cvtron.utils.reporter import print_prob
 from cvtron.utils.config_loader import MODEL_ZOO_PATH
+from cvtron.utils.reporter import print_prob
 
 
 def simple_classify_api(img_file,

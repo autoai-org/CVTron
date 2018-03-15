@@ -1,11 +1,14 @@
 #coding:utf-8
 import math
 import os
-import tensorflow as tf 
 
-from tensorflow.contrib.slim.python.slim.nets.inception_v3 import (inception_v3,inception_v3_arg_scope)
+import tensorflow as tf
+from tensorflow.contrib.slim.python.slim.nets.inception_v3 import (inception_v3,
+                                                                   inception_v3_arg_scope)
+
 from cvtron.data_zoo.hico import hico
 from cvtron.preprocessor.inception_preprocessing import preprocess_image
+
 slim = tf.contrib.slim
 
 def get_init_fn(checkpoint_dir):
@@ -100,4 +103,3 @@ class ClassifierTrainer(object):
                 save_summaries_secs=300,
                 save_interval_secs=300
             )
-

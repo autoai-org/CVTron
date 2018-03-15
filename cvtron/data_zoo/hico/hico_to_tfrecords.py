@@ -1,8 +1,8 @@
-from datetime import datetime
 import os
 import random
 import sys
 import threading
+from datetime import datetime
 
 # import google3
 import numpy as np

@@ -1,9 +1,8 @@
 import tensorflow as tf
 import tensorlayer as tl
-from tensorlayer.layers import SlimNetsLayer
-from tensorlayer.layers import InputLayer
-from tensorflow.contrib.slim.python.slim.nets.inception_v3 import (
-    inception_v3, inception_v3_arg_scope)
+from tensorflow.contrib.slim.python.slim.nets.inception_v3 import (inception_v3,
+                                                                   inception_v3_arg_scope)
+from tensorlayer.layers import InputLayer, SlimNetsLayer
 
 from cvtron.Base.Model import Model
 
@@ -16,7 +15,7 @@ class InceptionV3(Model):
         self.slim_args = config
         print(type(self.slim_args))
         print(self.slim_args)
-        
+
     def _build_arch(self, net_in):
         with slim.arg_scope(inception_v3_arg_scope()):
             network = SlimNetsLayer(

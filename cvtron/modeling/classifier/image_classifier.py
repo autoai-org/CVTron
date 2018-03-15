@@ -1,11 +1,13 @@
 # coding:utf-8
 import os
 import sys
+
+import numpy as np
 import tensorflow as tf
 import tensorlayer as tl
-import numpy as np
-from cvtron.utils.config_loader import MODEL_ZOO_PATH
+
 from cvtron.modeling.base.singleton import singleton
+from cvtron.utils.config_loader import MODEL_ZOO_PATH
 
 
 @singleton

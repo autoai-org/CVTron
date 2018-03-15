@@ -1,10 +1,11 @@
 # coding:utf-8
 import os
-import tensorflow as tf
-import numpy as np
 import re
 import time
 from datetime import datetime
+
+import numpy as np
+import tensorflow as tf
 
 
 class YoloTrainer(object):

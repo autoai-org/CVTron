@@ -1,8 +1,11 @@
 #coding:utf-8
-import tensorflow as tf 
-import numpy as np 
 import re
+
+import numpy as np
+import tensorflow as tf
+
 from cvtron.model_zoo.yolo.net import Net
+
 
 class YoloNet(Net):
     def __init__(self, common_params, net_params, test=False):

@@ -1,15 +1,13 @@
 # coding:utf-8
 import tensorflow as tf
 import tensorlayer as tl
-from tensorlayer.layers import Conv2dLayer
-from tensorlayer.layers import PoolLayer
-from tensorlayer.layers import FlattenLayer
-from tensorlayer.layers import DenseLayer
-from tensorlayer.layers import InputLayer
+from tensorlayer.layers import (Conv2dLayer, DenseLayer, FlattenLayer,
+                                InputLayer, PoolLayer)
 
 from cvtron.Base.Model import Model
 
 from .constant import VGG_MEAN
+
 
 class VGG19(Model):
     def __init__(self):

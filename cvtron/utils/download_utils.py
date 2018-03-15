@@ -1,12 +1,11 @@
 # coding:utf-8
-from tqdm import tqdm
-import requests
 import os
 from urllib.request import urlopen
-from cvtron.model_zoo.constant import VGG_NPY_URL
-from cvtron.model_zoo.constant import INCEPTION_CKPT_URL
-from cvtron.model_zoo.constant import LAPSRN_URL
-from cvtron.model_zoo.constant import YOLO_TINY_CKPT_URL
+
+import requests
+from tqdm import tqdm
+
+from cvtron.model_zoo.constant import (INCEPTION_CKPT_URL, LAPSRN_URL, VGG_NPY_URL, YOLO_TINY_CKPT_URL)
 from cvtron.utils.config_loader import MODEL_ZOO_PATH
 
 
@@ -23,11 +22,9 @@ def download(url, path):
     if first_byte >= file_size:
         return file_size
     header = {"Range": "bytes=%s-%s" % (first_byte, file_size)}
-    pbar = tqdm(
-        total=file_size, initial=first_byte,
-        unit='B', unit_scale=True, desc=filename)
+    pbar = tqdm(total=file_size, initial=first_byte, unit='B', unit_scale=True, desc=filename)
     req = requests.get(url, headers=header, stream=True)
-    with(open(dest, 'ab')) as f:
+    with (open(dest, 'ab')) as f:
         for chunk in req.iter_content(chunk_size=1024):
             if chunk:
                 f.write(chunk)

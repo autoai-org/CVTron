@@ -1,5 +1,6 @@
-from easydict import EasyDict as edict
 import json
+
+from easydict import EasyDict as edict
 
 config = edict()
 

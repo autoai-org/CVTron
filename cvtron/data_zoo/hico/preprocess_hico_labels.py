@@ -3,9 +3,11 @@ Sample usage:
 	python process_hico_labels.py 
 """
 
-import os
 import argparse
+import os
+
 import scipy.io as sio
+
 
 def generate_labels_file(anno_split, output_path):
 	labels = []

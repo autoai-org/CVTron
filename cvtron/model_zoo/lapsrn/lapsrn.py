@@ -2,12 +2,11 @@
 import numpy as np
 import tensorflow as tf
 import tensorlayer as tl
-from tensorlayer.layers import PReluLayer
-from tensorlayer.layers import Conv2dLayer
-from tensorlayer.layers import ElementwiseLayer
-from tensorlayer.layers import SubpixelConv2d
-from tensorlayer.layers import InputLayer
+from tensorlayer.layers import (Conv2dLayer, ElementwiseLayer, InputLayer,
+                                PReluLayer, SubpixelConv2d)
+
 from config import config
+
 
 def lrelu(x):
     return tf.maximum(x*0.2,x)
