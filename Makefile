@@ -1,6 +1,7 @@
 default:
 	@echo "Usage:"
-	@echo "\tmake test      # run pylint"
+	@echo "\tmake test
+	@echo "\tmake format
 
 test:
 	python tests/classifier.py

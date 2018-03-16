@@ -6,7 +6,7 @@ import numpy as np
 import tensorflow as tf
 import tensorlayer as tl
 
-from cvtron.modeling.base.singleton import singleton
+from cvtron.Base.decorator import singleton
 from cvtron.utils.config_loader import MODEL_ZOO_PATH
 
 

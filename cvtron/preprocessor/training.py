@@ -1,6 +1,8 @@
 import tensorflow as tf
 from tensorflow.python.ops import control_flow_ops
+
 slim = tf.contrib.slim
+
 
 def get_labels_from_annotation(annotation_tensor, class_labels):
     """Returns tensor of size (width, height, num_classes) derived from annotation tensor.
@@ -33,8 +35,7 @@ def get_labels_from_annotation(annotation_tensor, class_labels):
     valid_entries_class_labels = class_labels[:-1]
 
     # Stack the binary masks for each class
-    labels_2d = list(map(lambda x: tf.equal(annotation_tensor, x),
-                    valid_entries_class_labels))
+    labels_2d = list(map(lambda x: tf.equal(annotation_tensor, x), valid_entries_class_labels))
 
     # Perform the merging of all of the binary masks into one matrix
     labels_2d_stacked = tf.stack(labels_2d, axis=2)
@@ -46,6 +47,7 @@ def get_labels_from_annotation(annotation_tensor, class_labels):
     labels_2d_stacked_float = tf.to_float(labels_2d_stacked)
 
     return labels_2d_stacked_float
+
 
 def get_labels_from_annotation_batch(annotation_batch_tensor, class_labels):
     """Returns tensor of size (batch_size, width, height, num_classes) derived
@@ -71,11 +73,11 @@ def get_labels_from_annotation_batch(annotation_batch_tensor, class_labels):
         Tensor with labels for each batch.
     """
 
-    batch_labels = tf.map_fn(fn=lambda x: get_labels_from_annotation(annotation_tensor=x, class_labels=class_labels),
-                             elems=annotation_batch_tensor,
-                             dtype=tf.float32)
+    batch_labels = tf.map_fn(
+        fn=lambda x: get_labels_from_annotation(annotation_tensor=x, class_labels=class_labels), elems=annotation_batch_tensor, dtype=tf.float32)
 
     return batch_labels
+
 
 def get_valid_entries_indices_from_annotation_batch(annotation_batch_tensor, class_labels):
     """Returns tensor of size (num_valid_eintries, 3).
@@ -112,17 +114,14 @@ def get_valid_entries_indices_from_annotation_batch(annotation_batch_tensor, cla
     # use for training. We do this because some pixels
     # are marked as ambigious and we don't want to use
     # them for trainig to avoid confusing the model
-    valid_labels_mask = tf.not_equal(annotation_batch_tensor,
-                                     mask_out_class_label)
+    valid_labels_mask = tf.not_equal(annotation_batch_tensor, mask_out_class_label)
 
     valid_labels_indices = tf.where(valid_labels_mask)
 
     return tf.to_int32(valid_labels_indices)
 
 
-def get_valid_logits_and_labels(annotation_batch_tensor,
-                                logits_batch_tensor,
-                                class_labels):
+def get_valid_logits_and_labels(annotation_batch_tensor, logits_batch_tensor, class_labels):
     """Returns two tensors of size (num_valid_entries, num_classes).
     The function converts annotation batch tensor input of the size
     (batch_size, height, width) into label tensor (batch_size, height,
@@ -148,12 +147,9 @@ def get_valid_logits_and_labels(annotation_batch_tensor,
         Tensors that represent valid labels and logits.
     """
 
-    labels_batch_tensor = get_labels_from_annotation_batch(annotation_batch_tensor=annotation_batch_tensor,
-                                                           class_labels=class_labels)
+    labels_batch_tensor = get_labels_from_annotation_batch(annotation_batch_tensor=annotation_batch_tensor, class_labels=class_labels)
 
-    valid_batch_indices = get_valid_entries_indices_from_annotation_batch(
-        annotation_batch_tensor=annotation_batch_tensor,
-        class_labels=class_labels)
+    valid_batch_indices = get_valid_entries_indices_from_annotation_batch(annotation_batch_tensor=annotation_batch_tensor, class_labels=class_labels)
 
     valid_labels_batch_tensor = tf.gather_nd(params=labels_batch_tensor, indices=valid_batch_indices)
 

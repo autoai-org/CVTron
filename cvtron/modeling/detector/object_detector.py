@@ -5,8 +5,8 @@ import sys
 import numpy as np
 import tensorflow as tf
 
+from cvtron.Base.decorator import singleton
 from cvtron.model_zoo.yolo.yolo_tiny_net import YoloTinyNet
-from cvtron.modeling.base.singleton import singleton
 from cvtron.utils.config_loader import MODEL_ZOO_PATH
 
 
