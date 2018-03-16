@@ -5,6 +5,7 @@ import numpy as np
 import tensorflow as tf
 
 from cvtron.Base.Trainer import Trainer
+from cvtron.data_zoo.segment.SBD import TFRecordConverter
 from cvtron.model_zoo.deeplab.deeplabV3 import deeplab_v3
 from cvtron.preprocessor import training
 from cvtron.preprocessor.read_data import (distort_randomly_image_color,
@@ -17,10 +18,28 @@ slim = tf.contrib.slim
 
 class DeepLabTrainer(Trainer):
     def __init__(self,config):
-        super.__init__(config)
+        Trainer.__init__(self,config)
         self.result = {}
-    def parseDataset(self):
-        pass
+
+    def parseDataset(self,dataset_config):
+
+        tfrc = TFRecordConverter(
+            base_dataset_dir_voc = dataset_config['base_dataset_dir_voc'],
+            images_folder_name_voc = dataset_config['images_folder_name_voc'],
+            annotations_folder_name_voc = dataset_config['annotations_folder_name_voc'],
+            base_dataset_dir_aug_voc = dataset_config['base_dataset_dir_aug_voc'],
+            images_folder_name_aug_voc = dataset_config['images_folder_name_aug_voc'],
+            annotations_folder_name_aug_voc = dataset_config['annotations_folder_name_aug_voc']
+        )
+        train_images_filename_list, val_images_filename_list = tfrc.shuffle(dataset_config['shuffle_ratio'],tfrc.get_files_list(dataset_config['filename']))
+        TRAIN_DATASET_DIR = dataset_config['train_dataset_dir']
+        TRAIN_FILE = 'train.tfrecords'
+        VALIDATION_FILE = 'validation.tfrecords'
+        train_writer = tf.python_io.TFRecordWriter(os.path.join(TRAIN_DATASET_DIR,TRAIN_FILE))
+        val_writer = tf.python_io.TFRecordWriter(os.path.join(TRAIN_DATASET_DIR,VALIDATION_FILE))
+
+        tfrc.convert(train_images_filename_list,train_writer)
+        tfrc.convert(val_images_filename_list,val_writer)
         
     def train(self):
         training_dataset = tf.data.TFRecordDataset(self.config['train_filename'])
@@ -103,59 +122,59 @@ class DeepLabTrainer(Trainer):
             sess.run(tf.global_variables_initializer())
 
             try:
-                restorer.restore(sess, "./resnet/checkpoints/" + self.config['resnet_model'] + ".ckpt")
+                restorer.restore(sess, "/home/sfermi/Documents/Programming/project/cv/tmp/" + self.config['resnet_model'] + ".ckpt")
                 print("Model checkpoits for " + self.config['resnet_model'] + " restored!")
             except FileNotFoundError:
                 print("Please download " + self.config['resnet_model'] + " model checkpoints from: https://github.com/tensorflow/models/tree/master/research/slim")
         
-        training_handle = sess.run(training_iterator.string_handle())
-        validation_handle = sess.run(validation_iterator.string_handle())
-        sess.run(training_iterator.initializer)
-        validation_running_loss = []
-        train_steps_before_eval = 100
-        validation_steps = 20
+            training_handle = sess.run(training_iterator.string_handle())
+            validation_handle = sess.run(validation_iterator.string_handle())
+            sess.run(training_iterator.initializer)
+            validation_running_loss = []
+            train_steps_before_eval = 100
+            validation_steps = 20
 
-        while True:
-            training_average_loss = 0
-            for i in range(train_steps_before_eval):
-                _, global_step_np, train_loss, summary_string = sess.run([train_step,
-                                                                        global_step, cross_entropy_tf,
-                                                                        merged_summary_op],
-                                                                            feed_dict={is_training_tf:True,
-                                                                                           handle: training_handle})
-                training_average_loss += train_loss
-                if i % self.config['log_per_step']:
-                    train_writer.add_summary(summary_string, global_step_np)
+            while True:
+                training_average_loss = 0
+                for i in range(train_steps_before_eval):
+                    _, global_step_np, train_loss, summary_string = sess.run([train_step,
+                                                                            global_step, cross_entropy_tf,
+                                                                            merged_summary_op],
+                                                                                feed_dict={is_training_tf:True,
+                                                                                            handle: training_handle})
+                    training_average_loss += train_loss
+                    if i % self.config['log_per_step']:
+                        train_writer.add_summary(summary_string, global_step_np)
 
-            training_average_loss/=train_steps_before_eval
-            sess.run(validation_iterator.initializer)
-            validation_average_loss = 0
-            validation_average_miou = 0         
-            for i in range(validation_steps):
-                val_loss, summary_string, _= sess.run([cross_entropy_tf, merged_summary_op, update_op],
-                                                    feed_dict={handle: validation_handle,
-                                                                is_training_tf:False})
-                validation_average_loss+=val_loss
-                validation_average_miou+=sess.run(miou)
-            
-            validation_average_loss/=validation_steps
-            validation_average_miou/=validation_steps
+                training_average_loss/=train_steps_before_eval
+                sess.run(validation_iterator.initializer)
+                validation_average_loss = 0
+                validation_average_miou = 0         
+                for i in range(validation_steps):
+                    val_loss, summary_string, _= sess.run([cross_entropy_tf, merged_summary_op, update_op],
+                                                        feed_dict={handle: validation_handle,
+                                                                    is_training_tf:False})
+                    validation_average_loss+=val_loss
+                    validation_average_miou+=sess.run(miou)
+                
+                validation_average_loss/=validation_steps
+                validation_average_miou/=validation_steps
 
-            validation_running_loss.append(validation_average_loss)
-            validation_global_loss = np.mean(validation_running_loss)
+                validation_running_loss.append(validation_average_loss)
+                validation_global_loss = np.mean(validation_running_loss)
 
-            if validation_global_loss < current_best_val_loss:
-                save_path = saver.save(sess, self.LOG_FOLDER + "/train/model.ckpt")
-                print("Model checkpoints written! Best average val loss:", validation_global_loss)
-                current_best_val_loss = validation_global_loss
-                self.result['current_best_val_loss'] = str(current_best_val_loss)
+                if validation_global_loss < current_best_val_loss:
+                    save_path = saver.save(sess, self.LOG_FOLDER + "/train/model.ckpt")
+                    print("Model checkpoints written! Best average val loss:", validation_global_loss)
+                    current_best_val_loss = validation_global_loss
+                    self.result['current_best_val_loss'] = str(current_best_val_loss)
 
-            print("Global step:", global_step_np, "Average train loss:",
-              training_average_loss, "\tGlobal Validation Avg Loss:", validation_global_loss,
-              "MIoU:", validation_average_miou)
+                print("Global step:", global_step_np, "Average train loss:",
+                training_average_loss, "\tGlobal Validation Avg Loss:", validation_global_loss,
+                "MIoU:", validation_average_miou)
 
-            test_writer.add_summary(summary_string, global_step_np)
-        train_writer.close()
+                test_writer.add_summary(summary_string, global_step_np)
+            train_writer.close()
 
 
     def getConfig(self):

@@ -1,6 +1,6 @@
+#coding:utf-8
 import tensorflow as tf
-
-from inception_preprocessing import apply_with_random_selector, distort_color
+from cvtron.preprocessor.inception_preprocessing import apply_with_random_selector, distort_color
 
 
 def random_flip_image_and_annotation(image_tensor, annotation_tensor, shapes):
