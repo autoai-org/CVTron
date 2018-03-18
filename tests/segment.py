@@ -18,7 +18,9 @@ config = {
     'valid_filename':'/home/sfermi/Documents/Programming/project/cv/tmp/validation.tfrecords',
     'valid_buffer_size':100,
     'log_folder':'/home/sfermi/Documents/Programming/project/cv/tmp/',
-    'log_per_step':10
+    'log_per_step':10,
+    'train_steps':100,
+    'eval_steps':100,
 }
 dlt = DeepLabTrainer(config)
 dlt.train()

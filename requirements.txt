@@ -30,3 +30,4 @@ urllib3==1.22
 Werkzeug==0.14.1
 coverage
 easydict
+logbook
