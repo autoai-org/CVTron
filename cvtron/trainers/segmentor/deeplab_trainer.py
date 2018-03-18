@@ -13,6 +13,7 @@ from cvtron.preprocessor.read_data import (distort_randomly_image_color,
                                            rescale_image_and_annotation_by_factor,
                                            scale_image_with_crop_padding,
                                            tf_record_parser)
+from cvtron.utils.logger.Logger import Logger
 
 slim = tf.contrib.slim
 
@@ -21,6 +22,7 @@ class DeepLabTrainer(Trainer):
     def __init__(self, config):
         Trainer.__init__(self, config)
         self.result = []
+        self.logger = Logger('Deep Lab Train Monitor')
 
     def parseDataset(self, dataset_config):
 
@@ -198,11 +200,13 @@ class DeepLabTrainer(Trainer):
                       training_average_loss, "\tGlobal Validation Avg Loss:", validation_global_loss,
                       "MIoU:", validation_average_miou)
                 result = {
-                    'global_step': global_step_np,
-                    'avg_train_loss': training_average_loss,
-                    'avg_validation_loss': validation_average_loss,
+                    'global_step': str(global_step_np),
+                    'avg_train_loss': str(training_average_loss),
+                    'avg_validation_loss': str(validation_average_loss),
+                    'MIOU': str(validation_average_miou)
                 }
                 self.result.append(result)
+                self.logger.writeLog(self.result, os.path.join(self.LOG_FOLDER,'log.json'))
 
                 test_writer.add_summary(summary_string, global_step_np)
             train_writer.close()
