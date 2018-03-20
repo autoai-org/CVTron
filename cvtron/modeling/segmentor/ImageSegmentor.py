@@ -1,39 +1,35 @@
 #coding:utf-8
 import os
 
+import numpy as np
 import tensorflow as tf
 
 from cvtron.model_zoo.deeplab.deeplabV3 import deeplab_v3
 from cvtron.preprocessor import training
 from cvtron.preprocessor.read_data import (scale_image_with_crop_padding,
                                            tf_record_parser)
+from scipy.misc import imread
 
+slim = tf.contrib.slim
 
 class ImageSegmentor(object):
-    def __init__(self, model_path):
+    def __init__(self, model_path, args):
         self.sess = tf.InteractiveSession()
         self.model_path = model_path
-    def _load_tfrecords(self, test_filenames, batch_size, train_args):
-        class_labels = [v for v in range((train_args['number_of_classes']+1))]
-        class_labels[-1] = 255
-        test_data = tf.data.TFRecordDataset(test_filenames)
-        test_data = test_data.map(tf_record_parser)  # Parse the record into tensors.
-        test_data = test_data.map(scale_image_with_crop_padding)
-        test_data = test_data.batch(batch_size)
-        iterator = test_data.make_one_shot_iterator()
-        batch_images_tf, batch_labels_tf, batch_shapes_tf = iterator.get_next()
-        logits_tf =  deeplab_v3(batch_images_tf, train_args, is_training=False, reuse=False)
-        valid_labels_batch_tf, valid_logits_batch_tf = training.get_valid_logits_and_labels(
-            annotation_batch_tensor=batch_labels_tf,
-            logits_batch_tensor=logits_tf,
-            class_labels=class_labels)
-        cross_entropies_tf = tf.nn.softmax_cross_entropy_with_logits(logits=valid_logits_batch_tf,
-                                                             labels=valid_labels_batch_tf)
-        cross_entropy_mean_tf = tf.reduce_mean(cross_entropies_tf)
-        tf.summary.scalar('cross_entropy', cross_entropy_mean_tf)
-        
+        self.resnet_model = args['resnet_model']
+        self.x = tf.placeholder("float",[None, None, None, 3])
+        self.network = deeplab_v3(self.x, args, is_training=False, reuse=False)
+        self.pred = tf.argmax(self.network, axis=3)
     def _init_model_(self):
+        print('init model')
         saver = tf.train.Saver()
-        saver.restore(self.sess, os.path.join(self.model_path,'deeplabv3.ckpt'))
+        saver.restore(self.sess, os.path.join(self.model_path,'deeplabv3/model.ckpt'))
     def segment(self, img_file):
-        pass
+        from cvtron.utils.image_loader import load_image
+        from cvtron.utils.image_loader import write_image
+        image = imread(img_file)
+        image  = image.reshape((1, image.shape[0], image.shape[1],3))
+        pred_image = self.sess.run(self.pred, feed_dict={self.x: image})
+
+        pred_image = np.reshape(pred_image, (image.shape[1], image.shape[2] ))
+        write_image(pred_image,'./test.jpg')
