@@ -58,7 +58,7 @@ class ObjectDetector(object):
                 'ymin': ymin,
                 'xmax': xmax,
                 'ymax': ymax,
-                'class_num': class_num
+                'class_num': str(class_num)
             }
             return result
         else:

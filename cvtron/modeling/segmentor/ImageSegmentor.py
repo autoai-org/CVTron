@@ -33,3 +33,4 @@ class ImageSegmentor(object):
 
         pred_image = np.reshape(pred_image, (image.shape[1], image.shape[2] ))
         write_image(pred_image,'./test.jpg')
+        return pred_image
