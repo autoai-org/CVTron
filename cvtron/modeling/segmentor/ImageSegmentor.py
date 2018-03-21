@@ -3,12 +3,12 @@ import os
 
 import numpy as np
 import tensorflow as tf
+from scipy.misc import imread
 
 from cvtron.model_zoo.deeplab.deeplabV3 import deeplab_v3
 from cvtron.preprocessor import training
 from cvtron.preprocessor.read_data import (scale_image_with_crop_padding,
                                            tf_record_parser)
-from scipy.misc import imread
 
 slim = tf.contrib.slim
 

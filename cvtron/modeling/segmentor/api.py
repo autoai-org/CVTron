@@ -1,6 +1,6 @@
 from cvtron.modeling.segmentor.ImageSegmentor import ImageSegmentor
-from cvtron.utils.config_loader import MODEL_ZOO_PATH
 from cvtron.trainers.segmentor.deeplab_trainer import DeepLabTrainer
+from cvtron.utils.config_loader import MODEL_ZOO_PATH
 
 config = {
     'batch_norm_epsilon':1e-5,
