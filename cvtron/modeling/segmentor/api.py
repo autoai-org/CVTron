@@ -1,5 +1,6 @@
 from cvtron.modeling.segmentor.ImageSegmentor import ImageSegmentor
 from cvtron.utils.config_loader import MODEL_ZOO_PATH
+from cvtron.trainers.segmentor.deeplab_trainer import DeepLabTrainer
 
 config = {
     'batch_norm_epsilon':1e-5,
@@ -16,7 +17,7 @@ config = {
     'batch_size':1,
     'valid_filename':'/home/sfermi/Documents/Programming/project/cv/tmp/validation.tfrecords',
     'valid_buffer_size':100,
-    'log_folder':'/home/sfermi/Documents/Programming/project/cv/tmp/',
+    'log_folder':'/home/sfermi/Documents/Programming/project/web/cvtron-serve/cvtron-serve/static/log',
     'log_per_step':1,
     'train_steps':100,
     'eval_steps':100,
@@ -30,3 +31,11 @@ def get_segmentor(model_name='deeplabv3',
     imageSegmentor = ImageSegmentor(MODEL_ZOO_PATH, config)
     imageSegmentor._init_model_()
     return imageSegmentor
+
+def get_segmentor_trainer(config):
+    dlt = DeepLabTrainer(config)
+    return dlt
+
+def get_defaultConfig():
+    print(config)
+    return config
