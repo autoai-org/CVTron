@@ -44,6 +44,7 @@ class TFRecordConverter(object):
         val_images_filename_list = images_filename_list[:int(ratio*len(images_filename_list))]
         train_images_filename_list = images_filename_list[int(ratio*len(images_filename_list)):]
         return train_images_filename_list, val_images_filename_list
+        
     def read_annotation_from_mat_file(self, annotations_dir, image_name):
         annotations_path = os.path.join(annotations_dir, (image_name.strip() + ".mat"))
         mat = spio.loadmat(annotations_path)

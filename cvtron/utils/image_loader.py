@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import skimage
 import skimage.io
 import skimage.transform
@@ -13,3 +14,9 @@ def load_image(path, height, width):
     crop_img = img[yy:yy + short_edge, xx:xx + short_edge]
     resized_img = skimage.transform.resize(crop_img, (height, width))
     return resized_img
+
+
+def write_image(image, output):
+    plt.axis('off')
+    plt.imshow(image)
+    plt.savefig(output, bbox_inches='tight')

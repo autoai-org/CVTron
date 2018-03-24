@@ -13,8 +13,6 @@ class InceptionV3(Model):
     def __init__(self, config):
         self.name = 'Google Inception V3'
         self.slim_args = config
-        print(type(self.slim_args))
-        print(self.slim_args)
 
     def _build_arch(self, net_in):
         with slim.arg_scope(inception_v3_arg_scope()):

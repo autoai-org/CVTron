@@ -1,4 +1,3 @@
-#coding:utf-8
 import tensorflow as tf
 
 from cvtron.data_zoo.imagenet_mean import _B_MEAN, _G_MEAN, _R_MEAN
