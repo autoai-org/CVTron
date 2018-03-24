@@ -1,7 +1,4 @@
 # coding:utf-8
-<<<<<<< HEAD
-from logbook import Logger, StreamHandler
-=======
 import json
 import os
 import sys
@@ -9,7 +6,6 @@ import sys
 from logbook import Logger as lg
 from logbook import StreamHandler
 
->>>>>>> 0b8133f63e104c13825aae3798841c45d0fe51f3
 
 class Logger(object):
     def __init__(self, loggerName):
