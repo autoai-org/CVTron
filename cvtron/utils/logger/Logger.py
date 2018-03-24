@@ -1,5 +1,5 @@
 # coding:utf-8
-
+from logbook import Logger, StreamHandler
 
 class Logger(object):
     def __init__(self, level):
