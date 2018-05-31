@@ -1,0 +1,3 @@
+build/
+*.so
+_mask.c
