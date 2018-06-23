@@ -13,7 +13,7 @@ install_requires = [
 
 setup(
     name='cvtron',
-    version='0.0.1',
+    version='0.0.2',
     description='Out-of-the-Box Computer Vision Library',
     url='https://github.com/cv-group',
     author='Xiaozhe Yao',
