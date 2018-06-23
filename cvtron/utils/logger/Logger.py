@@ -27,3 +27,5 @@ class Logger(object):
     def writeLog(self, log, filename):
         with open(filename, 'w') as f:
             json.dump(log, f)
+
+logger = Logger("CVTron")
