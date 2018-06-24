@@ -7,4 +7,3 @@ The dataset format documentation could be found at
 """
 
 from cvtron.data_zoo.compress_util import ArchiveFile
-

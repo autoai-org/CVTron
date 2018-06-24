@@ -5,7 +5,6 @@ INCEPTION_CKPT_URL = 'https://deepbase-1251068397.cos.ap-guangzhou.myqcloud.com/
 VGG_NPY_URL = 'https://deepbase-1251068397.cos.ap-guangzhou.myqcloud.com/vgg19.npy'
 LAPSRN_URL = 'https://deepbase-1251068397.cos.ap-guangzhou.myqcloud.com/lapsrn.npz'
 YOLO_TINY_CKPT_URL = 'https://deepbase-1251068397.cos.ap-guangzhou.myqcloud.com/yolo_tiny.ckpt'
-
 '''
 CDN URL
 INCEPTION_CKPT_URL = 'http://cdn.zhitantech.com/static/inception_v3.ckpt'

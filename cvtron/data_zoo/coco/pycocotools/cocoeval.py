@@ -1,11 +1,14 @@
 __author__ = 'tsungyi'
 
-import numpy as np
+import copy
 import datetime
 import time
 from collections import defaultdict
+
+import numpy as np
+
 from . import mask as maskUtils
-import copy
+
 
 class COCOeval:
     # Interface for evaluating detection on the Microsoft COCO dataset.

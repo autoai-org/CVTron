@@ -1,9 +1,9 @@
 #coding:utf-8
 import matplotlib.pyplot as plt
+import numpy as np
 import skimage
 import skimage.io
 import skimage.transform
-import numpy as np
 
 from cvtron.data_zoo.coco.pycocotools.mask import area, decode
 
