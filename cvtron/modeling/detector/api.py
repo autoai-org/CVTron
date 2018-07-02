@@ -12,7 +12,7 @@ train_config = {'pipeline_config_file':'/home/wujia/examples/platform/test-platf
           'gpu_id':1,
           'log_every_n_steps':100}
 
-infer_config = {'model_dir':'/home/wujia/examples/platform/test-platform/CVTron/cvtron/tests/train_dir'}
+infer_config = {'model_name':'yolo'}
 
 
 def simple_detect_api(img_file,

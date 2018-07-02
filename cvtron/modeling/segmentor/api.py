@@ -37,5 +37,4 @@ def get_segmentor_trainer(config):
     return dlt
 
 def get_defaultConfig():
-    print(config)
     return config

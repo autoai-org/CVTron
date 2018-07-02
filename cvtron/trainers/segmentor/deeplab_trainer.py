@@ -211,6 +211,7 @@ class DeepLabTrainer(Trainer):
 
                 test_writer.add_summary(summary_string, global_step_np)
             train_writer.close()
+        return '1234'
 
     def getConfig(self):
         return {
