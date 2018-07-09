@@ -5,7 +5,8 @@ from urllib.request import urlopen
 import requests
 from tqdm import tqdm
 
-from cvtron.model_zoo.constant import (INCEPTION_CKPT_URL, LAPSRN_URL, VGG_NPY_URL, YOLO_TINY_CKPT_URL)
+from cvtron.model_zoo.constant import (INCEPTION_CKPT_URL, LAPSRN_URL,
+                                       VGG_NPY_URL, YOLO_TINY_CKPT_URL)
 from cvtron.utils.config_loader import MODEL_ZOO_PATH
 
 
