@@ -1,4 +1,10 @@
+import os
+import io
 import sys
+import json
+import hashlib
+import random
+import PIL.Image
 import traceback
 import functools
 import tensorflow as tf
@@ -17,6 +23,138 @@ class ObjectDetectionTrainer(BaseTrainer):
     def __init__(self, config = None, local_path = None):
         self.config = config
         self.local_path = local_path
+    
+    def _get_num_classes(self, annotation_file):
+        category = []
+        with open(annotation_file) as f:
+            annotation_data = json.load(f)
+            img_num = len(annotation_data)
+            for i in range(img_num):
+                obj_num = len(annotation_data[i]['boundbox'])
+                for j in range(obj_num):
+                    label = annotation_data[i]['boundbox'][j]['label']
+                    if label not in category:
+                        category.append(label)
+
+        return len(category)
+
+    def _create_tf_data(self, annotation_file, ratio=0.7):
+        category = []
+        obj_list = []
+
+        with open(annotation_file) as f:
+            annotation_data = json.load(f)
+            img_num = len(annotation_data)
+            for i in range(img_num):
+                obj_num = len(annotation_data[i]['boundbox'])
+                for j in range(obj_num):
+                    obj_idx_local = j
+                    img_idx = i
+                    obj_list.append((img_idx,  obj_idx_local))
+                    label = annotation_data[i]['boundbox'][j]['label']
+                    if label not in category:
+                        category.append(label)
+        label_map_file = os.path.join(self.local_path, 'label_map.pbtxt')
+        with open(label_map_file, mode='w') as f:
+            offset = 1
+            for idx in range(len(category)):
+                f.write('item { \n  id: %d\n  name: \'%s\'\n}\n\n' % (idx + offset, category[idx]))
+
+        random.seed(42)
+        random.shuffle(obj_list)
+        num_train = int(ratio * len(obj_list))
+        train_examples = obj_list[:num_train]
+        val_examples = obj_list[num_train:]
+        label_map_dict = label_map_util.get_label_map_dict(label_map_file)
+        train_output_path = os.path.join(self.local_path, 'train.record')
+        val_output_path = os.path.join(self.local_path, 'val.record')
+
+        self.create_tf_record(
+            train_output_path,
+            annotation_data,
+            label_map_dict,
+            train_examples)
+        self.create_tf_record(
+            val_output_path,
+            annotation_data,
+            label_map_dict,
+            val_examples)
+
+    def create_tf_record(self, output_file, annotation_data, label_map_dict, examples):
+        writer = tf.python_io.TFRecordWriter(output_file)
+
+        for idx in range(len(examples)):
+            idx_tuple = examples[idx]
+
+            try:
+                tf_example = self._create_tf_example(idx_tuple, annotation_data, label_map_dict)
+                writer.write(tf_example.SerializeToString())
+            except ValueError:
+                logger.error('Invalid example, ignoring.')
+                traceback.print_exc(file=sys.stdout)
+        writer.close()
+
+    def _create_tf_example(self, idx_tuple, annotation_data, label_map_dict):
+        img_idx = idx_tuple[0]
+        obj_idx_local = idx_tuple[1]
+        img_path = os.path.join(self.local_path, annotation_data[img_idx]['folder'])
+        img_path = os.path.join(img_path, annotation_data[img_idx]['filename'])
+        if not os.path.exists(img_path):
+            raise ValueError('Could not find image')
+        with tf.gfile.GFile(img_path, 'rb') as fid:
+            encoded_jpg = fid.read()
+        encoded_jpg_io = io.BytesIO(encoded_jpg)
+        image = PIL.Image.open(encoded_jpg_io)
+        try:
+            image.verify()
+        except Exception:
+            raise ValueError('Corrupt JPEG')
+        if image.format != 'JPEG':
+            raise ValueError('Image format not JPEG')
+        key = hashlib.sha256(encoded_jpg).hexdigest()
+
+        width = int(annotation_data[img_idx]['size']['width'])
+        height = int(annotation_data[img_idx]['size']['height'])
+        xmins = [float(annotation_data[img_idx]['boundbox'][obj_idx_local]['xmin']) / width]
+        ymins = [float(annotation_data[img_idx]['boundbox'][obj_idx_local]['ymin']) / height]
+        xmaxs = [float(annotation_data[img_idx]['boundbox'][obj_idx_local]['xmax']) / width]
+        ymaxs = [float(annotation_data[img_idx]['boundbox'][obj_idx_local]['ymax']) / height]
+
+        class_name = annotation_data[img_idx]['boundbox'][obj_idx_local]['label']
+        classes_text = [class_name.encode('utf8')]
+        classes = [label_map_dict[class_name]]
+        truncated = [int(0)]
+        difficult_obj = [int(0)]
+        poses = ['Frontal'.encode('utf8')]
+
+        feature_dict = {
+        'image/height': dataset_util.int64_feature(height),
+        'image/width': dataset_util.int64_feature(width),
+        'image/filename': dataset_util.bytes_feature(
+            annotation_data[img_idx]['filename'].encode('utf8')),
+        'image/source_id': dataset_util.bytes_feature(
+            annotation_data[img_idx]['filename'].encode('utf8')),
+        'image/key/sha256': dataset_util.bytes_feature(key.encode('utf8')),
+        'image/encoded': dataset_util.bytes_feature(encoded_jpg),
+        'image/format': dataset_util.bytes_feature('jpeg'.encode('utf8')),
+        'image/object/bbox/xmin': dataset_util.float_list_feature(xmins),
+        'image/object/bbox/xmax': dataset_util.float_list_feature(xmaxs),
+        'image/object/bbox/ymin': dataset_util.float_list_feature(ymins),
+        'image/object/bbox/ymax': dataset_util.float_list_feature(ymaxs),
+        'image/object/class/text': dataset_util.bytes_list_feature(classes_text),
+        'image/object/class/label': dataset_util.int64_list_feature(classes),
+        'image/object/difficult': dataset_util.int64_list_feature(difficult_obj),
+        'image/object/truncated': dataset_util.int64_list_feature(truncated),
+        'image/object/view': dataset_util.bytes_list_feature(poses),
+        }
+
+        example = tf.train.Example(features=tf.train.Features(feature=feature_dict))
+        return example
+
+    def parse_dataset(self, annotation_file, ratio=0.7):
+        self.annotation_file = annotation_file
+        self._create_tf_data(annotation_file, ratio)
+
     def get_next(self, config):
         return dataset_util.make_initializable_iterator(
             dataset_builder.build(config)).get_next()        
@@ -77,9 +215,12 @@ class ObjectDetectionTrainer(BaseTrainer):
         pipeline_config = pipeline_pb2.TrainEvalPipelineConfig()
         with tf.gfile.GFile(pipeline_config_path, "r") as f:
             proto_str = f.read()
+            proto_str = proto_str.replace('num_classes: 37', 'num_classes: ' + str(self._get_num_classes(self.annotation_file)))
             proto_str = proto_str.replace('PATH_TO_BE_CONFIGURED', self.local_path)
+            if self.override:
+                for config_key in self.override_config.keys():
+                    proto_str = proto_str.replace(config_key + ': ' + str(self.default_config[config_key]), config_key+': ' + str(self.override_config[config_key]))
             text_format.Merge(proto_str, pipeline_config)
-
         configs = {}
         configs["model"] = pipeline_config.model
         configs["train_config"] = pipeline_config.train_config
@@ -91,3 +232,13 @@ class ObjectDetectionTrainer(BaseTrainer):
     def parse_config(self):
         train_pipeline_file = self.config['pipeline_config_file']
         configs = self._get_configs_from_pipeline_file(train_pipeline_file)
+
+    def override_train_configs(self, config):
+        self.override = True
+        self.default_config = self.get_train_config()
+        self.override_config = config
+
+    def get_train_config(self):
+        return {
+            'num_steps':200000
+        }
