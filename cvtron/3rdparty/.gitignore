@@ -1,4 +1,2 @@
 object_detection/*
 !object_detection/install-ubuntu.sh
-tf-models/*
-!tf-models/install-ubuntu.sh

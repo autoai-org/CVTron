@@ -112,9 +112,9 @@ class ObjectDetectionTrainer(BaseTrainer):
         if image.format != 'JPEG':
             raise ValueError('Image format not JPEG')
         key = hashlib.sha256(encoded_jpg).hexdigest()
-
-        width = int(annotation_data[img_idx]['size']['width'])
-        height = int(annotation_data[img_idx]['size']['height'])
+        width, height = image.size
+        # width = int(annotation_data[img_idx]['size']['width'])
+        # height = int(annotation_data[img_idx]['size']['height'])
         xmins = [float(annotation_data[img_idx]['boundbox'][obj_idx_local]['xmin']) / width]
         ymins = [float(annotation_data[img_idx]['boundbox'][obj_idx_local]['ymin']) / height]
         xmaxs = [float(annotation_data[img_idx]['boundbox'][obj_idx_local]['xmax']) / width]
