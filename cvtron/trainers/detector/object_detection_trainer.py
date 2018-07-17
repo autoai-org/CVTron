@@ -35,7 +35,6 @@ class ObjectDetectionTrainer(BaseTrainer):
                     label = annotation_data[i]['boundbox'][j]['label']
                     if label not in category:
                         category.append(label)
-
         return len(category)
 
     def _create_tf_data(self, annotation_file, ratio=0.7):
@@ -82,10 +81,8 @@ class ObjectDetectionTrainer(BaseTrainer):
 
     def create_tf_record(self, output_file, annotation_data, label_map_dict, examples):
         writer = tf.python_io.TFRecordWriter(output_file)
-
         for idx in range(len(examples)):
             idx_tuple = examples[idx]
-
             try:
                 tf_example = self._create_tf_example(idx_tuple, annotation_data, label_map_dict)
                 writer.write(tf_example.SerializeToString())
@@ -155,6 +152,9 @@ class ObjectDetectionTrainer(BaseTrainer):
         self.annotation_file = annotation_file
         self._create_tf_data(annotation_file, ratio)
 
+    def set_annotation(self, annotation_file):
+        self.annotation_file = annotation_file
+
     def get_next(self, config):
         return dataset_util.make_initializable_iterator(
             dataset_builder.build(config)).get_next()        
@@ -167,7 +167,6 @@ class ObjectDetectionTrainer(BaseTrainer):
         configs = self._get_configs_from_pipeline_file(train_pipeline_file)
         model_config = configs['model']
         train_config = configs['train_config']
-        print(train_config)
         input_config = configs['train_input_config']
         logger.info('Building Model')
         model_fn = functools.partial(
@@ -185,8 +184,8 @@ class ObjectDetectionTrainer(BaseTrainer):
         master = ''
         num_clones = 1
         clone_on_cpu = False
-        tf.logging.info('Train model')
         try:
+            logger.info('Training Started')
             trainer.train(create_input_dict_fn, model_fn, train_config, master, task,
                             num_clones, worker_replicas, clone_on_cpu, ps_tasks,
                             worker_job_name, is_chief, self.config)
@@ -202,7 +201,7 @@ class ObjectDetectionTrainer(BaseTrainer):
         model_fn = functools.partial(
             model_builder.build,
             model_config=model_config,
-            is_training=False)
+            is_training=True)
         create_input_dict_fn = functools.partial(self.get_next, input_config)
         label_map = label_map_util.load_labelmap(input_config.label_map_path)
         max_num_classes = max([item.id for item in label_map.item])
@@ -215,11 +214,7 @@ class ObjectDetectionTrainer(BaseTrainer):
         pipeline_config = pipeline_pb2.TrainEvalPipelineConfig()
         with tf.gfile.GFile(pipeline_config_path, "r") as f:
             proto_str = f.read()
-            proto_str = proto_str.replace('num_classes: 37', 'num_classes: ' + str(self._get_num_classes(self.annotation_file)))
             proto_str = proto_str.replace('PATH_TO_BE_CONFIGURED', self.local_path)
-            if self.override:
-                for config_key in self.override_config.keys():
-                    proto_str = proto_str.replace(config_key + ': ' + str(self.default_config[config_key]), config_key+': ' + str(self.override_config[config_key]))
             text_format.Merge(proto_str, pipeline_config)
         configs = {}
         configs["model"] = pipeline_config.model
@@ -229,14 +224,51 @@ class ObjectDetectionTrainer(BaseTrainer):
         configs["eval_input_config"] = pipeline_config.eval_input_reader
         return configs
 
+    def override_pipeline_config(self, override_config, input_config_path):
+        self.override = True
+        self.default_config = self.get_train_config()
+        self.override_config = override_config
+        new_pipeline_path = os.path.join(self.local_path, 'pipeline.config')
+        content = ''
+        num_classes = self._get_num_classes(self.annotation_file)
+        with open(input_config_path, 'r+') as old_file:
+            find_eval_input_reader = False
+            for line in old_file:
+                if line.find('num_classes:') != -1:
+                    (key, value) = line.split(':')
+                    line = line.replace(value, ' {}\n'.format(str(num_classes)))
+                if line.find('batch_size:') != -1:
+                    (key, value) = line.split(':')
+                    line = line.replace(value, ' {}\n'.format(str(override_config['batch_size'])))
+                if line.find('initial_learning_rate:') != -1:
+                    (key, value) = line.split(':')
+                    line = line.replace(value, ' {}\n'.format(str(override_config['learning_rate'])))
+                if line.find('eval_input_reader:') != -1:
+                    find_eval_input_reader = True
+                # if line.find('input_path:') != -1 and (not find_eval_input_reader):
+                #    (key, value) = line.split(':')
+                #    line = line.replace(value, ' "{}"\n'.format(os.path.join(override_config['data_dir'], 'train.record')))
+                # if line.find('input_path:') != -1 and find_eval_input_reader:
+                #     (key, value) = line.split(':')
+                #     line = line.replace(value, ' "{}"\n'.format(os.path.join(override_config['data_dir'], 'val.record')))
+                # if line.find('label_map_path:') != -1:
+                #     (key, value) = line.split(':')
+                #     line = line.replace(value, ' "{}"\n'.format(os.path.join(override_config['data_dir'], 'label_map.pbtxt')))
+                # if line.find('fine_tune_checkpoint:') != -1:
+                #     (key, value) = line.split(':')
+                #     line = line.replace(value, ' "{}"\n'.format(override_config['fine_tune_ckpt']))
+                if line.find('num_steps:') != -1:
+                    (key, value) = line.split(':')
+                    line = line.replace(value, ' {}\n'.format(str(override_config['num_steps'])))
+                content += line
+        with open(new_pipeline_path, 'w') as new_file:
+            new_file.writelines(content)
+    
+        return new_pipeline_path
+
     def parse_config(self):
         train_pipeline_file = self.config['pipeline_config_file']
         configs = self._get_configs_from_pipeline_file(train_pipeline_file)
-
-    def override_train_configs(self, config):
-        self.override = True
-        self.default_config = self.get_train_config()
-        self.override_config = config
 
     def get_train_config(self):
         return {
