@@ -54,7 +54,7 @@ class SlimObjectDetector(object):
                     result['x_max'] = xmax * im_width
                     result['y_min'] = ymin * im_height
                     result['y_max'] = ymax * im_height
-                    result['score'] = scores[i]
+                    result['score'] = float(scores[i])
                     if classes[i] in category_index.keys():
                         class_name = category_index[classes[i]]['name']
                     else:

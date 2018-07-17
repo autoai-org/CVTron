@@ -6,7 +6,7 @@ from PIL import Image
 import skimage.transform
 import matplotlib.pyplot as plt
 
-from cvtron.data_zoo.coco.pycocotools.mask import area, decode
+# from cvtron.data_zoo.coco.pycocotools.mask import area, decode
 
 
 def load_image(path, height, width):
