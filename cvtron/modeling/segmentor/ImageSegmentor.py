@@ -21,7 +21,6 @@ class ImageSegmentor(object):
         self.network = deeplab_v3(self.x, args, is_training=False, reuse=False)
         self.pred = tf.argmax(self.network, axis=3)
     def _init_model_(self):
-        print('init model')
         saver = tf.train.Saver()
         saver.restore(self.sess, os.path.join(self.model_path,'deeplabv3/model.ckpt'))
     def segment(self, img_file):

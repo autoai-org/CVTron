@@ -1,7 +1,12 @@
-import matplotlib.pyplot as plt
+#coding:utf-8
 import skimage
 import skimage.io
+import numpy as np
+from PIL import Image
 import skimage.transform
+import matplotlib.pyplot as plt
+
+# from cvtron.data_zoo.coco.pycocotools.mask import area, decode
 
 
 def load_image(path, height, width):
@@ -20,3 +25,18 @@ def write_image(image, output):
     plt.axis('off')
     plt.imshow(image)
     plt.savefig(output, bbox_inches='tight')
+
+
+def parseEncoding(boundaries):
+    pairs = boundaries.split(' ')
+    poly = np.array(pairs)
+
+def load_image_into_numpy_array(image_file_path):
+    image = Image.open(image_file_path)
+    (im_width, im_height) = image.size
+    return np.array(image.getdata()).reshape(
+        (im_height, im_width, 3)).astype(np.uint8)
+
+def get_image_size(image_file_path):
+    image = Image.open(image_file_path)
+    return image.size

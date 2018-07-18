@@ -199,6 +199,7 @@ class DeepLabTrainer(Trainer):
                 print("Global step:", global_step_np, "Average train loss:",
                       training_average_loss, "\tGlobal Validation Avg Loss:", validation_global_loss,
                       "MIoU:", validation_average_miou)
+                      
                 result = {
                     'global_step': str(global_step_np),
                     'avg_train_loss': str(training_average_loss),
@@ -210,6 +211,7 @@ class DeepLabTrainer(Trainer):
 
                 test_writer.add_summary(summary_string, global_step_np)
             train_writer.close()
+        return '1234'
 
     def getConfig(self):
         return {
