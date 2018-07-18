@@ -3,9 +3,8 @@
 ![logo.png](http://ac-5focnst0.clouddn.com/1a6303279b0a69375abc.png)
 
 [![Build Status](https://travis-ci.org/unarxiv/CVTron.svg?branch=master)](https://travis-ci.org/unarxiv/CVTron)
-[![Maintainability](https://api.codeclimate.com/v1/badges/721858de11e15ef33f2a/maintainability)](https://codeclimate.com/github/unarxiv/CVTron/maintainability)
+[![codebeat badge](https://codebeat.co/badges/8c64c6df-a1dd-40a1-9220-570b811282d8)](https://codebeat.co/projects/github-com-unarxiv-cvtron-master)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/721858de11e15ef33f2a/test_coverage)](https://codeclimate.com/github/unarxiv/CVTron/test_coverage)
-[![Documentation Status](https://readthedocs.org/projects/cvtron/badge/?version=latest)](http://cvtron.readthedocs.io/en/latest/?badge=latest)
 [![Slack](https://img.shields.io/badge/chat-on%20slack-7289da.svg)](https://cvtron.slack.com)
 
 CVTRon is a Computer Vision Library for industry use. It tries to provide an out-of-the-box experience for our customers and help them build on top of commonly used algorithms and models.
