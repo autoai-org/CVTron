@@ -1,0 +1,15 @@
+{
+  "batch_size": 100,
+  "max_num_batches": 0,
+  "master": "",
+  "num_preprocessing_threads": 4,
+  "checkpoint_path": "",
+  "dataset_name": "",
+  "dataset_split_name": "test",
+  "dataset_dir": "",
+  "label_offset": 0,
+  "model_name": "",
+  "preporcessing_name": "",
+  "moving_average_decay": 0,
+  "eval_image_size": 0
+}

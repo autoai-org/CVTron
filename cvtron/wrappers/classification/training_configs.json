@@ -1,0 +1,60 @@
+{
+  "tf_configs": {
+    "master": "",
+    "train_dir": "",
+    "num_clones": 1,
+    "clone_on_cpu": 0,
+    "worker_replicas": 1,
+    "task": 0,
+    "num_ps_tasks": 0,
+    "num_readers": 4,
+    "num_preprocessing_threads": 4,
+    "log_every_n_steps": 100,
+    "save_summaries_secs": 600,
+    "save_interval_secs": 600
+  },
+  "optimization_params": {
+    "weight_decay": 0.00004,
+    "optimizer": "rmsprop",
+    "adadelta_rho": 0.95,
+    "adagrad_initial_accmulator_value": 0.1,
+    "adam_beta1": 0.9,
+    "adam_beta2": 0.999,
+    "opt_epsilon": 1.0,
+    "ftrl_learning_rate_power": -0.5,
+    "ftrl_initial_accmulator_value": 0.1,
+    "ftrl_l1": 0.0,
+    "ftrl_l2": 0.0,
+    "momentum": 0.9,
+    "rmsprop_momentum": 0.9,
+    "rmsprop_decay": 0.9
+  },
+  "learning_rate_params": {
+    "learning_rate_decay_type": "exponential",
+    "learning_rate": 0.01,
+    "end_learning_rate": 0.0001,
+    "label_smoothing": 0.0,
+    "learning_rate_decay_factor": 0.94,
+    "num_epochs_per_decay": 2.0,
+    "sync_replicas": 0,
+    "replicas_to_aggregate": 1,
+    "moving_average_decay": 0
+  },
+  "dataset_params": {
+    "dataset_name": "",
+    "dataset_split_name": "train",
+    "dataset_dir": "",
+    "label_offset": 0,
+    "model_name": "",
+    "preprocessing_name": "",
+    "batch_size": 24,
+    "train_image_size": 0,
+    "max_number_of_steps": 0
+  },
+  "fine_tuning_params": {
+    "checkpoint_path": "",
+    "checkpoint_exclude_scopes": "",
+    "trainable_scopes": "",
+    "ignore_missing_vars": 0
+  }
+}
