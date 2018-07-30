@@ -463,6 +463,11 @@ def train_step(sess, train_op, global_step, train_step_kwargs):
   else:
     should_stop = False
 
+  if should_stop:
+    taskId = train_step_kwargs['args'][0]
+    emailAddr = train_step_kwargs['args'][1]
+    train_step_kwargs['notify_func'](taskId, emailAddr)
+
   return total_loss, should_stop
 
 
@@ -496,7 +501,9 @@ def train(train_op,
           trace_every_n_steps=None,
           ignore_live_threads=False,
           logger=None,
-          weblog_dir=None):
+          weblog_dir=None,
+          notify_func=None,
+          args=None):
   """Runs a training loop using a TensorFlow supervisor.
   When the sync_optimizer is supplied, gradient updates are applied
   synchronously. Otherwise, gradient updates are applied asynchronous.
@@ -682,6 +689,9 @@ def train(train_op,
     train_step_kwargs['logger'] = logger
     train_step_kwargs['logs'] = list()
     train_step_kwargs['weblog_dir'] = weblog_dir
+  if notify_func is not None:
+    train_step_kwargs['notify_func'] = notify_func
+    train_step_kwargs['args'] = args
 
   total_loss = None
   should_retry = True
