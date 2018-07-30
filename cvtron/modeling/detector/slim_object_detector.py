@@ -1,4 +1,5 @@
 #coding:utf-8
+import os
 import numpy as np
 import tensorflow as tf
 from PIL import Image
@@ -7,7 +8,11 @@ from cvtron.Base.decorator import singleton
 from cvtron.utils.image_loader import (get_image_size,
                                        load_image_into_numpy_array)
 from cvtron.utils.logger.Logger import logger
-from object_detection.utils import label_map_util
+from cvtron.utils.image_loader import get_image_size
+from cvtron.utils.image_loader import load_image_into_numpy_array
+from cvtron.thirdparty.object_detection import exporter
+from cvtron.thirdparty.object_detection.protos import pipeline_pb2
+from google.protobuf import text_format
 
 
 @singleton
@@ -65,13 +70,36 @@ class SlimObjectDetector(object):
                         vis_results.append(result)
         return vis_results
 
+    def export_latest_ckpt(self, train_dir, output_dir):
+        pipeline_config = pipeline_pb2.TrainEvalPipelineConfig()
+        pipeline_config_path = os.path.join(train_dir, 'pipeline.config')
+
+        with tf.gfile.GFile(pipeline_config_path, 'r') as f:
+           text_format.Merge(f.read(), pipeline_config)
+           # text_format.Merge('', pipeline_config)
+           # if FLAGS.input_shape:
+           #   input_shape = [
+           #       int(dim) if dim != '-1' else None
+           #       for dim in FLAGS.input_shape.split(',')
+           #   ]
+           # else:
+           #   input_shape = None
+        input_shape = None
+        input_type = 'image_tensor'
+        trained_checkpoint_prefix = tf.train.latest_checkpoint(train_dir)
+        exporter.export_inference_graph(input_type, pipeline_config,
+                                    trained_checkpoint_prefix,
+                                    output_dir, input_shape)       
+
     def detect(self, img_file, threshold = 0.7):
         # read image
         image_np = load_image_into_numpy_array(img_file)
         (im_width, im_height) = get_image_size(img_file)
         # Inference process
         with self.graph.as_default():
-            with tf.Session() as sess:
+            sess_config = tf.ConfigProto()
+            sess_config.gpu_options.allow_growth = True
+            with tf.Session(config=sess_config) as sess:
                 ## Get handles to input and output tensors
                 ops = tf.get_default_graph().get_operations()
                 all_tensor_names = {
