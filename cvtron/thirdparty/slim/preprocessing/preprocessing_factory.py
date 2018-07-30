@@ -14,16 +14,12 @@
 # ==============================================================================
 """Contains a factory for building various models."""
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import tensorflow as tf
 
-from preprocessing import cifarnet_preprocessing
-from preprocessing import inception_preprocessing
-from preprocessing import lenet_preprocessing
-from preprocessing import vgg_preprocessing
+from preprocessing import (cifarnet_preprocessing, inception_preprocessing,
+                           lenet_preprocessing, vgg_preprocessing)
 
 slim = tf.contrib.slim
 

@@ -30,15 +30,12 @@ $ python download_and_convert_data.py \
     --dataset_dir=/tmp/flowers
 ```
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import tensorflow as tf
 
-from datasets import download_and_convert_cifar10
-from datasets import download_and_convert_flowers
-from datasets import download_and_convert_mnist
+from datasets import (download_and_convert_cifar10,
+                      download_and_convert_flowers, download_and_convert_mnist)
 
 FLAGS = tf.app.flags.FLAGS
 

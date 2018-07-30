@@ -25,9 +25,7 @@ A reference implementation written in Lua can be found at:
 https://github.com/phillipi/pix2pix/blob/master/models.lua
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import collections
 import functools

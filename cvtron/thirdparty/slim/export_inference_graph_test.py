@@ -15,16 +15,13 @@
 
 """Tests for export_inference_graph."""
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import os
 
-
 import tensorflow as tf
-
 from tensorflow.python.platform import gfile
+
 import export_inference_graph
 
 

@@ -14,15 +14,12 @@
 # ==============================================================================
 """Tests for slim.nets.resnet_v2."""
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import numpy as np
 import tensorflow as tf
 
-from nets import resnet_utils
-from nets import resnet_v2
+from nets import resnet_utils, resnet_v2
 
 slim = tf.contrib.slim
 

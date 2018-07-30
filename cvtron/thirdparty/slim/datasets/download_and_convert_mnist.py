@@ -22,19 +22,17 @@ protocol buffers, each of which contain a single image and label.
 The script should take about a minute to run.
 
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import gzip
 import os
 import sys
 
 import numpy as np
-from six.moves import urllib
 import tensorflow as tf
 
 from datasets import dataset_utils
+from six.moves import urllib
 
 # The URLs where the MNIST data can be downloaded.
 _DATA_URL = 'http://yann.lecun.com/exdb/mnist/'

@@ -22,20 +22,17 @@ protocol buffers, each of which contain a single image and label.
 The script should take several minutes to run.
 
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import os
 import sys
 import tarfile
 
 import numpy as np
-from six.moves import cPickle
-from six.moves import urllib
 import tensorflow as tf
 
 from datasets import dataset_utils
+from six.moves import cPickle, urllib
 
 # The URL where the CIFAR data can be downloaded.
 _DATA_URL = 'https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz'

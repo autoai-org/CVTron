@@ -1,13 +1,14 @@
 #coding:utf-8
 import numpy as np
-from PIL import Image
 import tensorflow as tf
-from object_detection.utils import label_map_util
+from PIL import Image
 
 from cvtron.Base.decorator import singleton
+from cvtron.utils.image_loader import (get_image_size,
+                                       load_image_into_numpy_array)
 from cvtron.utils.logger.Logger import logger
-from cvtron.utils.image_loader import get_image_size
-from cvtron.utils.image_loader import load_image_into_numpy_array
+from object_detection.utils import label_map_util
+
 
 @singleton
 class SlimObjectDetector(object):

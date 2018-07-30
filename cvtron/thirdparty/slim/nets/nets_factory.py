@@ -14,25 +14,16 @@
 # ==============================================================================
 """Contains a factory for building various models."""
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
+
 import functools
 
 import tensorflow as tf
 
-from nets import alexnet
-from nets import cifarnet
-from nets import inception
-from nets import lenet
-from nets import mobilenet_v1
-from nets import overfeat
-from nets import resnet_v1
-from nets import resnet_v2
-from nets import vgg
+from nets import (alexnet, cifarnet, inception, lenet, mobilenet_v1, overfeat,
+                  resnet_v1, resnet_v2, vgg)
 from nets.mobilenet import mobilenet_v2
-from nets.nasnet import nasnet
-from nets.nasnet import pnasnet
+from nets.nasnet import nasnet, pnasnet
 
 slim = tf.contrib.slim
 

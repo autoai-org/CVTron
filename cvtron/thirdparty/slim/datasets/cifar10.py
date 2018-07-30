@@ -18,11 +18,10 @@ The dataset scripts used to create the dataset can be found at:
 tensorflow/models/research/slim/datasets/download_and_convert_cifar10.py
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import os
+
 import tensorflow as tf
 
 from datasets import dataset_utils

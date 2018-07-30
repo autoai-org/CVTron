@@ -77,14 +77,13 @@ to stderr:
 > Wrote 615299 bounding boxes from 544546 annotated images.
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import glob
 import os.path
 import sys
 import xml.etree.ElementTree as ET
+
 from six.moves import xrange  # pylint: disable=redefined-builtin
 
 

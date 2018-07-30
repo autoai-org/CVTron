@@ -14,11 +14,10 @@
 # ==============================================================================
 """Validate mobilenet_v1 with options for quantization."""
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import math
+
 import tensorflow as tf
 
 from datasets import dataset_factory

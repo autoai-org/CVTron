@@ -52,16 +52,13 @@ bazel-bin/tensorflow/examples/label_image/label_image \
 
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import tensorflow as tf
-
 from tensorflow.python.platform import gfile
+
 from datasets import dataset_factory
 from nets import nets_factory
-
 
 slim = tf.contrib.slim
 

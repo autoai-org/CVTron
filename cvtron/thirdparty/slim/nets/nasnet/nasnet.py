@@ -16,11 +16,10 @@
 
 Paper: https://arxiv.org/abs/1707.07012
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import copy
+
 import tensorflow as tf
 
 from nets.nasnet import nasnet_utils

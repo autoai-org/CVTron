@@ -1,10 +1,10 @@
 #coding:utf-8
+import matplotlib.pyplot as plt
+import numpy as np
 import skimage
 import skimage.io
-import numpy as np
-from PIL import Image
 import skimage.transform
-import matplotlib.pyplot as plt
+from PIL import Image
 
 # from cvtron.data_zoo.coco.pycocotools.mask import area, decode
 
