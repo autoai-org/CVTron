@@ -99,8 +99,10 @@ class SlimClassifierTrainer(object):
     num_per_shard = int(math.ceil(len(photo_class) / float(num_shards)))
     with tf.Graph().as_default():
       image_reader = ImageReader()
-
-      with tf.Session('') as sess:
+ 
+      session_config = tf.ConfigProto()
+      session_config.gpu_options.allow_growth = True
+      with tf.Session(config=session_config) as sess:
         for shard_id in range(num_shards):
           # output_filename = self.training_configs['dataset_params']['dataset_dir'] + '%s_%05d-of-%05d.tfrecord' % (
           #   split_name, shard_id, num_shards)
@@ -114,10 +116,8 @@ class SlimClassifierTrainer(object):
               tf.logging.info('>> Converting image {}/{} shard {}'.format((i + 1), len(photo_class), shard_id))
 
               # Read the filename:
-              print(photo_class[i][0])
               image_data = tf.gfile.FastGFile(photo_class[i][0], 'rb').read()
               height, width = image_reader.read_image_dims(sess, image_data)
-              print('{}, {}'.format(width, height))
               class_name = photo_class[i][1]
               class_id = class_names_to_ids[class_name]
 
@@ -152,10 +152,10 @@ class SlimClassifierTrainer(object):
     training_files = photo_class[:num_training]
     validation_files = photo_class[num_training:]
 
-    self.num_classes = len(class_names)
-    self.splits_to_sizes = {'train': len(training_files), 'val': len(validation_files)}
-    self.items_to_descriptions = {'image': 'A color image of varying size.',
-                                  'label': 'A single integer between 0 and %d' % (len(class_names) - 1)}
+    # self.num_classes = len(class_names)
+    # self.splits_to_sizes = {'train': len(training_files), 'val': len(validation_files)}
+    # self.items_to_descriptions = {'image': 'A color image of varying size.',
+    #                               'label': 'A single integer between 0 and %d' % (len(class_names) - 1)}
 
     self.convert_dataset('train', training_files, class_names_to_ids)
     self.convert_dataset('val', validation_files, class_names_to_ids)
@@ -163,6 +163,7 @@ class SlimClassifierTrainer(object):
     # create label map
     ids_to_class_names = dict(zip(range(len(class_names)), class_names))
     dataset_utils.write_label_file(ids_to_class_names, self.local_path)
+
 
   def get_dataset(self, split_name, dataset_dir):
     assert split_name in ['train', 'val']
@@ -186,8 +187,8 @@ class SlimClassifierTrainer(object):
         keys_to_features, items_to_handlers)
 
     labels_to_names = None
-    if dataset_utils.has_labels(dataset_dir, 'label_map.txt'):
-      labels_to_names = dataset_utils.read_label_file(dataset_dir, 'label_map.txt')
+    if dataset_utils.has_labels(dataset_dir, 'labels.txt'):
+      labels_to_names = dataset_utils.read_label_file(dataset_dir, 'labels.txt')
 
     return slim.dataset.Dataset(
         data_sources=file_pattern,
@@ -266,7 +267,6 @@ class SlimClassifierTrainer(object):
     return optimizer
 
   def _get_init_fn(self):
-    print(self.training_configs['fine_tuning_params']['checkpoint_path'])
     if self.training_configs['fine_tuning_params']['checkpoint_path'] is None:
       return None
 
@@ -325,7 +325,7 @@ class SlimClassifierTrainer(object):
     try:
       path1 = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
       path2 = os.path.join('wrappers/classification', 'training_configs.json')
-      training_config_file = os.path.join(path1, path2) 
+      training_config_file = os.path.join(path1, path2)
       with open(training_config_file) as f:
         training_configs = json.load(f)
       training_configs['tf_configs']['train_dir'] = config['train_dir']
@@ -514,6 +514,9 @@ class SlimClassifierTrainer(object):
         # Merge all summaries together.
         summary_op = tf.summary.merge(list(summaries), name='summary_op')
 
+        session_config = tf.ConfigProto()
+        session_config.gpu_options.allow_growth = True       
+
         train_dir = training_configs['tf_configs']['train_dir']
         if not os.path.exists(train_dir):
           os.makedirs(train_dir)
@@ -531,6 +534,7 @@ class SlimClassifierTrainer(object):
             logdir=train_dir,
             master=training_configs['tf_configs']['master'],
             is_chief=(training_configs['tf_configs']['task'] == 0),
+            session_config=session_config,
             init_fn=self._get_init_fn(),
             summary_op=summary_op,
             log_every_n_steps=training_configs['tf_configs']['log_every_n_steps'],
@@ -545,3 +549,17 @@ class SlimClassifierTrainer(object):
   def parse_dataset(self, annotation_file, ratio=0.7):    
     self.annotation_file = annotation_file
     self.create_tf_data(annotation_file, ratio)
+
+  def set_dataset_info(self, annotation_file, ratio=0.7):
+    self.annotation_file = annotation_file
+    photo_class, class_names = self.get_filenames_and_classes(annotation_file)
+
+    num_training = int(len(photo_class) * ratio)
+    training_files = photo_class[:num_training]
+    validation_files = photo_class[num_training:]
+
+    self.num_classes = len(class_names)
+    self.splits_to_sizes = {'train': len(training_files), 'val': len(validation_files)}
+    self.items_to_descriptions = {'image': 'A color image of varying size.',
+                                  'label': 'A single integer between 0 and %d' % (len(class_names) - 1)}
+

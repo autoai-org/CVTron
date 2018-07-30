@@ -23,6 +23,7 @@ class ObjectDetectionTrainer(BaseTrainer):
     def __init__(self, config = None, local_path = None):
         self.config = config
         self.local_path = local_path
+        tf.logging.set_verbosity(tf.logging.INFO)     
     
     def _get_num_classes(self, annotation_file):
         category = []
@@ -147,7 +148,7 @@ class ObjectDetectionTrainer(BaseTrainer):
 
         example = tf.train.Example(features=tf.train.Features(feature=feature_dict))
         return example
-
+    
     def parse_dataset(self, annotation_file, ratio=0.7):
         self.annotation_file = annotation_file
         self._create_tf_data(annotation_file, ratio)
@@ -159,7 +160,7 @@ class ObjectDetectionTrainer(BaseTrainer):
         return dataset_util.make_initializable_iterator(
             dataset_builder.build(config)).get_next()        
 
-    def start(self):
+    def start(self, notify_func=None, args=None):   
         if self.config is None:
             logger.error('No Config Found')
             return
@@ -188,7 +189,7 @@ class ObjectDetectionTrainer(BaseTrainer):
             logger.info('Training Started')
             trainer.train(create_input_dict_fn, model_fn, train_config, master, task,
                             num_clones, worker_replicas, clone_on_cpu, ps_tasks,
-                            worker_job_name, is_chief, self.config)
+                            worker_job_name, is_chief, self.config, notify_func, args)
         except:
             logger.error('Cannot Start Training')
             traceback.print_exc(file=sys.stdout)
@@ -215,6 +216,8 @@ class ObjectDetectionTrainer(BaseTrainer):
         with tf.gfile.GFile(pipeline_config_path, "r") as f:
             proto_str = f.read()
             proto_str = proto_str.replace('PATH_TO_BE_CONFIGURED', self.local_path)
+            # proto_str = proto_str.replace('fine_tune_checkpoint: "PATH_TO_BE_CONFIGURED', 
+            #             'fine_tune_checkpoint: "{}'.format(self.local_path + '/pretrained'))
             text_format.Merge(proto_str, pipeline_config)
         configs = {}
         configs["model"] = pipeline_config.model
@@ -243,8 +246,8 @@ class ObjectDetectionTrainer(BaseTrainer):
                 if line.find('initial_learning_rate:') != -1:
                     (key, value) = line.split(':')
                     line = line.replace(value, ' {}\n'.format(str(override_config['learning_rate'])))
-                if line.find('eval_input_reader:') != -1:
-                    find_eval_input_reader = True
+                # if line.find('eval_input_reader:') != -1:
+                #     find_eval_input_reader = True
                 # if line.find('input_path:') != -1 and (not find_eval_input_reader):
                 #    (key, value) = line.split(':')
                 #    line = line.replace(value, ' "{}"\n'.format(os.path.join(override_config['data_dir'], 'train.record')))
