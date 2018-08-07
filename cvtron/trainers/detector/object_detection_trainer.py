@@ -31,29 +31,35 @@ class ObjectDetectionTrainer(BaseTrainer):
             annotation_data = json.load(f)
             img_num = len(annotation_data)
             for i in range(img_num):
-                obj_num = len(annotation_data[i]['boundbox'])
-                for j in range(obj_num):
-                    label = annotation_data[i]['boundbox'][j]['label']
-                    if label not in category:
-                        category.append(label)
+                if 'boundbox' in annotation_data[i]:
+                    obj_num = len(annotation_data[i]['boundbox'])
+                    for j in range(obj_num):
+                        label = annotation_data[i]['boundbox'][j]['label']
+                        if label not in category:
+                            category.append(label)
         return len(category)
 
     def _create_tf_data(self, annotation_file, ratio=0.7):
         category = []
         obj_list = []
 
+        valid_obj_anno = 0
         with open(annotation_file) as f:
             annotation_data = json.load(f)
             img_num = len(annotation_data)
             for i in range(img_num):
-                obj_num = len(annotation_data[i]['boundbox'])
-                for j in range(obj_num):
-                    obj_idx_local = j
-                    img_idx = i
-                    obj_list.append((img_idx,  obj_idx_local))
-                    label = annotation_data[i]['boundbox'][j]['label']
-                    if label not in category:
-                        category.append(label)
+                if 'boundbox' in annotation_data[i]:
+                    obj_num = len(annotation_data[i]['boundbox'])
+                    valid_obj_anno += obj_num
+                    for j in range(obj_num):
+                        obj_idx_local = j
+                        img_idx = i
+                        obj_list.append((img_idx,  obj_idx_local))
+                        label = annotation_data[i]['boundbox'][j]['label']
+                        if label not in category:
+                            category.append(label)
+        if valid_obj_anno == 0:
+            return valid_obj_anno
         label_map_file = os.path.join(self.local_path, 'label_map.pbtxt')
         with open(label_map_file, mode='w') as f:
             offset = 1
@@ -151,7 +157,8 @@ class ObjectDetectionTrainer(BaseTrainer):
     
     def parse_dataset(self, annotation_file, ratio=0.7):
         self.annotation_file = annotation_file
-        self._create_tf_data(annotation_file, ratio)
+        valid_obj_anno = self._create_tf_data(annotation_file, ratio)
+        return valid_obj_anno
 
     def set_annotation(self, annotation_file):
         self.annotation_file = annotation_file
