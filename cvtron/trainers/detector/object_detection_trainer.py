@@ -12,7 +12,7 @@ from object_detection.builders import dataset_builder
 from object_detection.builders import model_builder
 from object_detection.protos import pipeline_pb2
 from google.protobuf import text_format
-from object_detection import trainer, evaluator
+from object_detection import trainer_m, evaluator
 from object_detection.utils import config_util
 from object_detection.utils import dataset_util
 from object_detection.utils import label_map_util
@@ -187,7 +187,7 @@ class ObjectDetectionTrainer(BaseTrainer):
         clone_on_cpu = False
         try:
             logger.info('Training Started')
-            trainer.train(create_input_dict_fn, model_fn, train_config, master, task,
+            trainer_m.train(create_input_dict_fn, model_fn, train_config, master, task,
                             num_clones, worker_replicas, clone_on_cpu, ps_tasks,
                             worker_job_name, is_chief, self.config, notify_func, args)
         except:
