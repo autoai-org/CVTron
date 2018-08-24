@@ -316,7 +316,7 @@ class SlimClassifierTrainer(object):
       variables_to_train.extend(variables)
     return variables_to_train    
 
-  def start(self):
+  def start(self, notify_func=None, args=None):
     config = self.config
     if config is None:
       tf.logging.error('There is no input configurations.')
@@ -542,7 +542,9 @@ class SlimClassifierTrainer(object):
             save_interval_secs=training_configs['tf_configs']['save_interval_secs'],
             sync_optimizer=optimizer if training_configs['learning_rate_params']['sync_replicas'] else None,
             logger=logger,
-            weblog_dir=weblog_dir)
+            weblog_dir=weblog_dir,
+            notify_func=notify_func,
+            args=args)
     except:
       tf.logging.error('Unexpected error')
 
