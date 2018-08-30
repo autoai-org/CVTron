@@ -39,7 +39,9 @@ scope_map = {
   'resnet_v2_50': 'resnet_v2_50',
   'resnet_v2_101': 'resnet_v2_101',
   'resnet_v2_152': 'resnet_v2_152',
-  'resnet_v2_200': 'resnet_v2_200'
+  'resnet_v2_200': 'resnet_v2_200',
+  'mobilenet_v1': 'MobilenetV1',
+  'mobilenet_v2': 'MobilenetV2'
 }
 
 exclude_scopes_map = {
@@ -62,7 +64,9 @@ exclude_scopes_map = {
   'resnet_v2_50': '{}/logits',
   'resnet_v2_101': '{}/logits',
   'resnet_v2_152': '{}/logits',
-  'resnet_v2_200': '{}/logits'
+  'resnet_v2_200': '{}/logits',
+  'mobilenet_v1': '{}/Logits',
+  'mobilenet_v2': '{}/Logits'
 }
 
 class ImageReader(object):
@@ -322,10 +326,8 @@ class SlimClassifierTrainer(object):
       tf.logging.error('There is no input configurations.')
       return
 
-    try:
-      path1 = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-      path2 = os.path.join('wrappers/classification', 'training_configs.json')
-      training_config_file = os.path.join(path1, path2)
+    try:      
+      training_config_file = os.path.join(self.local_path, 'training_configs.json')
       with open(training_config_file) as f:
         training_configs = json.load(f)
       training_configs['tf_configs']['train_dir'] = config['train_dir']
@@ -494,6 +496,7 @@ class SlimClassifierTrainer(object):
             clones,
             optimizer,
             var_list=variables_to_train)
+        
         # Add total_loss to summary.
         summaries.add(tf.summary.scalar('total_loss', total_loss))
 
@@ -524,7 +527,7 @@ class SlimClassifierTrainer(object):
         if not os.path.exists(weblog_dir):
           os.makedirs(weblog_dir)
 
-        logger = Logger('Training Monitor')      
+        logger = Logger('Training Monitor')  
 
         ###########################
         # Kicks off the training. #
