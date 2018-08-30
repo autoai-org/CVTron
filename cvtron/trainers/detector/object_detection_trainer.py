@@ -222,9 +222,10 @@ class ObjectDetectionTrainer(BaseTrainer):
         pipeline_config = pipeline_pb2.TrainEvalPipelineConfig()
         with tf.gfile.GFile(pipeline_config_path, "r") as f:
             proto_str = f.read()
-            proto_str = proto_str.replace('PATH_TO_BE_CONFIGURED', self.local_path)
-            # proto_str = proto_str.replace('fine_tune_checkpoint: "PATH_TO_BE_CONFIGURED', 
-            #             'fine_tune_checkpoint: "{}'.format(self.local_path + '/pretrained'))
+            proto_str = proto_str.replace('path: "PATH_TO_BE_CONFIGURED', 
+                        'path: "{}'.format(self.local_path))
+            proto_str = proto_str.replace('fine_tune_checkpoint: "PATH_TO_BE_CONFIGURED', 
+                        'fine_tune_checkpoint: "{}'.format(os.path.join(self.local_path, 'pre-trained')))
             text_format.Merge(proto_str, pipeline_config)
         configs = {}
         configs["model"] = pipeline_config.model
