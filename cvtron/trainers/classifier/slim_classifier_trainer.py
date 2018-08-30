@@ -136,7 +136,7 @@ class SlimClassifierTrainer(object):
         path = os.path.join(folder, annotation_data[i]['filename'])
         if not os.path.exists(path):
           continue
-        cname = annotation_data[i]['object']['label']      
+        cname = annotation_data[i]['class']['label']      
         photo_class.append((path, cname))
         if cname not in class_names:
           class_names.append(cname)
