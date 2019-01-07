@@ -14,7 +14,7 @@ pkginfo==1.4.2
 protobuf==3.6.0
 pyparsing==2.2.0
 python-dateutil==2.7.3
-pytz==2018.5
+pytz==2018.9
 PyWavelets==0.5.2
 requests==2.19.1
 requests-toolbelt==0.8.0
