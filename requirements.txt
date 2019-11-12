@@ -13,7 +13,7 @@ Pillow==5.2.0
 pkginfo==1.4.2
 protobuf==3.6.0
 pyparsing==2.2.0
-python-dateutil==2.7.3
+python-dateutil==2.8.1
 pytz==2018.5
 PyWavelets==0.5.2
 requests==2.19.1
