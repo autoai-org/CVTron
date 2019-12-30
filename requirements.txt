@@ -12,7 +12,7 @@ numpy==1.14.5
 Pillow==5.2.0
 pkginfo==1.4.2
 protobuf==3.6.0
-pyparsing==2.2.0
+pyparsing==2.4.6
 python-dateutil==2.7.3
 pytz==2018.5
 PyWavelets==0.5.2
