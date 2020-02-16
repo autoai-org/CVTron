@@ -6,7 +6,7 @@ decorator==4.3.0
 enum34==1.1.6
 html5lib==1.0.1
 idna==2.7
-Markdown==2.6.11
+Markdown==3.2.1
 networkx==2.1
 numpy==1.14.5
 Pillow==5.2.0
