@@ -24,7 +24,7 @@ six==1.11.0
 tensorflow-gpu==1.8.0
 tensorflow-tensorboard==1.5.1
 tensorlayer==1.9.0
-tqdm==4.23.4
+tqdm==4.47.0
 twine==1.11.0
 urllib3==1.23
 Werkzeug==0.14.1
